@@ -41,7 +41,8 @@ void mem_init(long memory[MEM_SIZE]){
 
 long  mem_get(long request){
 	/* TODO */
-	return request;
+	(void)(request);
+	return -1;
 }
 
 void mem_free(long index){
@@ -81,6 +82,32 @@ int split_block(long index, long leng){
 	/* Zet de prev van het volgende blok goed naar het nieuwe blok. */
 	mem[mem[index] + index + 3] = new_idx;
 	return index;
+}
+
+long next_block(long index){
+	return index + mem[index] + 2;
+}
+
+void fuse_block(long index){
+	long prev = mem[mem[index + 1]];
+	long next = next_block(index);
+	if(prev != 0){
+		/* Vorige block bestaat. */
+		if(is_free(prev)){
+			mem[prev] += mem[index] + 2;
+			mem[next + 1] = prev;
+			mem[1] -=  2;
+		}
+	}
+
+	if(mem[mem[index]] + index + 1 < MEM_SIZE){
+		/* Volgende block bestaat. */
+		if(is_free(next)){
+			mem[index] += mem[next] + 2;
+			mem[next_block(next) + 1] = index; 
+			mem[1] -=  2;
+		}
+	}
 }
 
 int get_free_size(long index){
