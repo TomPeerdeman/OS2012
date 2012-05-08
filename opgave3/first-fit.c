@@ -1,17 +1,8 @@
 #include "mem_alloc.h"
+#include "first-fit.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-
-
-/* TODO: Netter in h file zetten. */
-void new_block(long index, long length, long prev, long next);
-
-int split_block(long index, long leng);
-
-void set_free(long index, long free);
-
-void print_blocks();
 
 
 /* 
