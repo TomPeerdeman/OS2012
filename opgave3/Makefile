@@ -10,8 +10,8 @@ CC=gcc
 CFLAGS=-Wall -ansi -O2 -Wextra -Werror
 
 #Andere vereiste bestanden die niet gecompileerd kunnen worden
-#O_FILES=input/mem_test2.o
-O_FILES=input/mem_test2_64.o
+O_FILES=input/mem_test2.o
+#O_FILES=input/mem_test2_64.o
 
 all: $(PROG) $(PROG2)
 
