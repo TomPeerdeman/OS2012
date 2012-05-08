@@ -26,7 +26,7 @@ void mem_init(long memory[MEM_SIZE]){
 	admin->toegewezen = 0;
 	admin->loos = ADMIN_SIZE;
 	
-	block = &blocks[FIRST_BLOCK];
+	block = (block_t*) &mem[FIRST_BLOCK];
 	block->free = 1;
 	block->length = MEM_SIZE - admin->loos - FIRST_BLOCK;
 	block->next = 0;
@@ -36,7 +36,8 @@ void mem_init(long memory[MEM_SIZE]){
 }
 
 int split_block(long index, long length){
-	block_t *block = &blocks[index];
+	block_t *block = (block_t*) &mem[index];
+	printf("Enter split %ld %ld\n", index, length);
 
 	if(block->free && block->length > length + ADMIN_SIZE + 1){
 		long newidx = index + ADMIN_SIZE + length;
@@ -49,33 +50,40 @@ int split_block(long index, long length){
 			/* Als er een volgend blok bestaat, zet zijn prev dan goed. */
 			(&blocks[newblock->next])->prev = newidx;
 		}
+		puts("Exit split true");
 		return index;
 	}
-	return 0;
+	printf("Exit split false %d; %ld %d\n", block->free, length + ADMIN_SIZE + 1, block->length);
+	return -1;
 }
 
 block_t *new_block(long index, long leng, long next, long prev){
-	block_t *block = &blocks[index];
+	block_t *block = (block_t*) &mem[index];
+	printf("Enter new %p\n", block);
 	
 	block->free = 1;
 	block->length = (short) leng;
 	block->next = (short) next;
 	block->prev = (short) prev;
+	
+	puts("Half way");
 	admin->loos += ADMIN_SIZE;
+	puts("Exit new");
 	return block;
 }
 
 void fuse_block(long index){
-	block_t *block = &blocks[index];
+	block_t *block = (block_t*) &mem[index];
 	
 	if(block->prev != 0 && blocks[block->prev].free){
-		block_t *prevblock = &blocks[block->prev];
+		block_t *prevblock = (block_t*) &mem[block->prev];
 		
 		prevblock->next = block->next;
 		prevblock->length += block->length;
 		
-		if(block->next != 0 && blocks[block->next].free){
-			(&blocks[block->next])->prev = block->prev;
+		if(block->next != 0){
+			((block_t*) &mem[block->next])->prev = block->prev;
+			fuse_block(block->next);
 		}
 		
 		admin->loos -= ADMIN_SIZE;
@@ -86,15 +94,35 @@ void print_blocks(){
 	block_t *block;
 	long idx = FIRST_BLOCK;
 	while(idx != 0){
-		block = &blocks[idx];
+		block = (block_t*) &mem[idx];
 		printf("Block: idx: %ld; leng: %d; free: %d\n", idx, block->length, block->free);
 		idx = block->next;
 	}
+	puts("");
 }
 
 long  mem_get(long request){
-	/* TODO */
-	(void)(request);
+	long largest = 0;
+	long largestidx = 0;
+	long idx = FIRST_BLOCK;
+	
+	print_blocks();
+	while(idx != 0){
+		if(blocks[idx].free && blocks[idx].length > largest){
+			largest = blocks[idx].length;
+			largestidx = idx;
+		}
+		idx = blocks[idx].next;
+	}
+	printf("Largest block is %ld with %ld words\n", largestidx, largest);
+	
+	if(largest < request || largestidx == 0){
+		return -1;
+	}else{
+		int ret = split_block(largestidx, request);
+		printf("Alloc %ld ? %d\n", request, ret);
+		return ret;
+	}
 	return -1;
 }
 

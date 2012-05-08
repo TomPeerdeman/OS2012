@@ -10,10 +10,10 @@ CC=gcc
 CFLAGS=-Wall -ansi -O2 -Wextra -Werror
 
 #Andere vereiste bestanden die niet gecompileerd kunnen worden
-O_FILES=input/mem_test2.o
-#O_FILES=input/mem_test2_64.o
+O_FILES=input/mem_test2-32.o
+#O_FILES=input/mem_test2-64.o
 
-all: $(PROG) $(PROG2)
+all: $(PROG)
 
 #Programma linken
 $(PROG): $(O_FILES) $(INCL)
@@ -34,8 +34,8 @@ clean:
 #Alle programma's runnen, de uitvoer komt in de out dir
 .PHONY: run
 run: all
+	#more input/input.txt | ./$(PROG) > out/$(PROG).txt
 	more input/input.txt | ./$(PROG) > out/$(PROG).txt
-	more input/input.txt | ./$(PROG2) > out/$(PROG2).txt
 	
 #Opschonen uitvoer bestanden
 .PHONY: cleanout
