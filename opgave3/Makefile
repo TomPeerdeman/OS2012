@@ -5,6 +5,8 @@ INCL=first-fit.o mem-func.o
 PROG2=worst-fit
 INCL2=worst-fit.o mem-func.o
 
+SEED=10
+
 #Compiler
 CC=gcc
 CFLAGS=-Wall -ansi -O2 -Wextra -Werror
@@ -13,8 +15,8 @@ CFLAGS=-Wall -ansi -O2 -Wextra -Werror
 O_FILES=input/mem_test2-32.o
 #O_FILES=input/mem_test2-64.o
 
-all: $(PROG)
-#all: $(PROG) $(PROG2)
+#all: $(PROG)
+all: $(PROG) $(PROG2)
 
 #Programma linken
 $(PROG): $(O_FILES) $(INCL)
@@ -35,8 +37,8 @@ clean:
 #Alle programma's runnen, de uitvoer komt in de out dir
 .PHONY: run
 run: all
-	#more input/input.txt | ./$(PROG2) > out/$(PROG2).txt
-	more input/input.txt | ./$(PROG) > out/$(PROG).txt
+	more input/input.txt | ./$(PROG2) $(SEED) > out/$(PROG2).txt
+	more input/input.txt | ./$(PROG) $(SEED) > out/$(PROG).txt
 	
 #Opschonen uitvoer bestanden
 .PHONY: cleanout

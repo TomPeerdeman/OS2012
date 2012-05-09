@@ -19,6 +19,8 @@ void new_block(long index, long length, long prev, long next);
 
 int split_block(long index, long leng);
 
+void free_block(long index);
+
 void set_length(long index, long length);
 
 void set_prev(long index, long prev);
