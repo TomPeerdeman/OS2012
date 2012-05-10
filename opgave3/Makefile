@@ -7,7 +7,7 @@ INCL2=worst-fit.o mem-func.o
 
 SEED=10
 
-MEM_ARCH=-32
+MEM_ARCH=-64
 
 #Compiler
 CC=gcc
