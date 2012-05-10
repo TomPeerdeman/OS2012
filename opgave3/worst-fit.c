@@ -27,13 +27,15 @@ long  mem_get(long request){
 		idx = get_next(idx);
 	}
 	
-	if(l == request && lidx != 0){
-		/* Gat precies groot genoeg. */
-		set_free(lidx, 0);
-		return lidx + ADMIN_SIZE;
-	}else if(l < request || lidx == 0){
+	if(lidx == 0){
 		/* Geen gat groot genoeg. */
 		return -1;
+	}else if(l == request){
+		/* Gat precies groot genoeg. */
+		mem[0] += request;
+		mem[1] += ADMIN_SIZE;
+		set_free(lidx, 0);
+		return lidx + ADMIN_SIZE;
 	}else{
 		/* Alleen een gat > request. */
 		return split_block(lidx, request);
@@ -59,14 +61,21 @@ void mem_available(long *empty, long *large, long *n_holes){
 	*large = 0;
 	*n_holes = 0;
 	while(idx != 0){
-		if(get_length(idx) > *large){
-			*large = get_length(idx);
-		}
 		next = get_next(idx);
 		prev = get_prev(idx);
-		if(next && prev && !get_free(next) && !get_free(prev)){
+		if(get_free(idx) && (
+				(next && prev && !get_free(next) && !get_free(prev))
+				|| (!prev && next && !get_free(next))
+				|| (!next && prev && !get_free(prev))
+				|| (!next && !prev)
+			)
+		){
+			if(get_length(idx) > *large){
+				*large = get_length(idx);
+			}
 			*n_holes += 1;
 		}
+		
 		idx = get_next(idx);
 	}
 }

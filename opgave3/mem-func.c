@@ -17,21 +17,23 @@ int split_block(long index, long length){
 	long newleng = blockleng - length - ADMIN_SIZE;
 	
 	if(blockleng < length + ADMIN_SIZE + 1){
-		/* Geen ruimte voor een nieuw blok van minimaal 1 woord. */
-		return -1;
+		/* Geen ruimte voor een nieuw blok van minimaal 1 woord. 
+		 * Geef dus een blok ter groote van request + de resterende ruimte.
+		 */
+		length = blockleng;
+	}else{
+		/* Maak het nieuwe blok. Plaats deze na 'length' woorden. */
+		new_block(newidx, newleng, index, get_next(index));
+		
+		/* Als het huidige blok een volgende blok heeft moet de pointer van
+		 * dat blok welke naar zijn vorige blok wijst naar het nieuwe blok
+		 * gezet worden.*/
+		if(get_next(index) != 0){
+			set_prev(get_next(index), newidx);
+		}
+		/* Zet het volgende blok van het huidige blok naar het nieuwe blok. */
+		set_next(index, newidx);
 	}
-	
-	/* Maak het nieuwe blok. Plaats deze na 'length' woorden. */
-	new_block(newidx, newleng, index, get_next(index));
-	
-	/* Als het huidige blok een volgende blok heeft moet de pointer van
-	 * dat blok welke naar zijn vorige blok wijst naar het nieuwe blok
-	 * gezet worden.*/
-	if(get_next(index) != 0){
-		set_prev(get_next(index), newidx);
-	}
-	/* Zet het volgende blok van het huidige blok naar het nieuwe blok. */
-	set_next(index, newidx);
 	
 	/* Zet de length van het huidige blok en zet hem op toegewezen. */
 	set_length(index, length);
@@ -57,6 +59,7 @@ void free_block(long index){
 		/* Zet het blok op vrij. */
 		set_free(index, 1);
 		mem[0] -= get_length(index);
+		mem[1] -= ADMIN_SIZE;
 	}
 	
 	/* Voeg vorige blok samen met het huidige als deze vrij is als een groot
@@ -68,8 +71,6 @@ void free_block(long index){
 		if(next != 0){
 			set_prev(next, prev);
 		}
-		
-		mem[1] -= ADMIN_SIZE;
 	}
 	
 	/* Voeg volgende blok samen met het huidige als deze vrij is als een 

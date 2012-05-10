@@ -2,14 +2,10 @@
 #define MEM_FUNC_H
 
 /* Zet de gebruikte architectuur. (ARCH_0, ARCH_32, ARCH_64)*/
-#define ARCH_32
+#define ARCH_64
 
 /* Lengte van een administratie blok. Aantal longs voorafgaande de eigenlijke
  * data. */
-#ifdef ARCH_0
-#define ADMIN_SIZE 4
-#endif
-
 #ifdef ARCH_32
 #define ADMIN_SIZE 2
 #endif
