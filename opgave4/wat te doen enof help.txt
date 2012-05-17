@@ -1,3 +1,6 @@
 krijg t niet voor mekaar een goede makefile te produceren
 hij loopt te janken over: undefined reference to 'main'
 terwijl er wel een main functie in die gegeven file zit.
+
+Had gister al makefile gemaakt maar nog niet gepushed.
+Kom op skype of fb ofzo, dat is wat makkelijker.
