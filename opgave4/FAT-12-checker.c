@@ -215,16 +215,15 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
 	}while(next && (next < 0x0FF0) && (nread < nclusters));
 	
 	if(next < 0x0FF0){
-		/* not a normal end of chain */
-		if(nread == nclusters){
-			printf("Incorrect file length, read %d cluster(s), next cluster"
+		/* nread >= nclusters => chainlength > file length */
+		printf("Incorrect file length, read %d cluster(s), next cluster"
 			" would be at %d but should be a end of chain marker.\n",
-				nread, next);
-			printDirEntry(e);
-			puts("");
-		}
+			nread, next);
+		printDirEntry(e);
+		puts("");
 		return -2;
 	}else if(nread != nclusters){
+		/* nread < nclusters => chainlength < file length */
 		printf("Incorrect file length, chain ends at cluster %d, but the file"
 			" length gives %d clusters.\n", nread, nclusters);
 	}
@@ -234,7 +233,7 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
 /* Read the entries in a directory (recursively).
    Files are read in, allowing further processing if desired
 */
-int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT, int entries){
+int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT, int fat){
 	int i, j;
 	char * buffer = NULL;
 	int nclusters = 0;
@@ -247,7 +246,7 @@ int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT, int entrie
 		if((dirs[i].name[0] == 0x05) || (dirs[i].name[0] == 0xe5)){
 			/*printf("Deleted entry\n");*/
 		}else if(dirs[i].name[0] > ' ' && (dirs[i].name[0] != '.')){
-			if(checkChain(dirs[i].start, sFAT, entries)){
+			if(checkChain(dirs[i].start, sFAT, fat)){
 				printDirEntry(dirs + i);
 				puts("");
 			}
@@ -261,7 +260,7 @@ int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT, int entrie
 				/*printf("Reading directory\n");
 				printDirEntry(dirs + i);
 				printf("with %d subitems\n", N);*/
-				readDirectory((dirEntry *) buffer, N, sFAT, entries);
+				readDirectory((dirEntry *) buffer, N, sFAT, fat);
 			} 
 		}
 	}
