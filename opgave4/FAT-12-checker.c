@@ -87,7 +87,7 @@ static int fid;
 
 /* print a directory entry
 */
-void printDirEntry(dirEntry * e){
+void printDirEntry(dirEntry *e){
 	int i;
 	short *zero = (short *) e->zero;
 	if(e->attrib == 0x0f){
@@ -129,7 +129,7 @@ int followDirEntry(dirEntry *e, unsigned short *sFAT){
 	int size = toLong(e->length);
 	int nexpected = 0;
 	nexpected = (size + clusterSize - 1) / clusterSize;
-	printf("Following chain from %d\n", cur);
+	/*printf("Following chain from %d\n", cur);*/
 	/* For directories a length of zero is generally specified.
 	   This code will thus read only a single cluster for directories. */
 	if(e->attrib == 0x0f){
@@ -146,16 +146,38 @@ int followDirEntry(dirEntry *e, unsigned short *sFAT){
 	do{
 		nclusters++;
 		next = sFAT[cur];
-		printf("%d ", next);
+		/*printf("%d ", next);*/
 		cur = next;
 	}while(next && (next < 0x0FF0) && (nclusters < nexpected));
-	printf("\nNclusters = %d\n", nclusters);
+	/*printf("\nNclusters = %d Nexpected = %d\n", nclusters, nexpected);*/
 	return nclusters;
+}
+
+int checkChain(unsigned short start, unsigned short *sFAT, int entries){
+	unsigned char *tmp = calloc(entries, 1);
+	unsigned short next = start;
+	unsigned short prev = start;
+	
+	while(next > 2 && next < 0xFF0){
+		tmp[next]++;
+		if(tmp[next] > 1){
+			printf("Found loop at index %hu\n", next);
+			return 1;
+		}
+		
+		prev = next;
+		next = sFAT[next];
+	}
+	if(next < 3){
+		printf("Found empty marker in chain at index %hu\n", prev);
+		return 1;
+	}
+	return 0;
 }
 
 /* This routine will read a file from disk and store it in a buffer
 */
-int bufferFile(dirEntry *e, unsigned short *sFAT, char ** buffer){
+int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
 /* First find number of clusters in file */
 	int cur = e->start;
 	int nclusters = followDirEntry(e, sFAT);
@@ -169,15 +191,20 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char ** buffer){
 	*buffer = calloc(nclusters * bps * spc, 1);
 	do{
 		if(badIndices[cur]){
-			printf("BufferFile: Index marked as inconsistent\n");
-			/*free(*buffer);
+			printf("Error while reading\n");
+			printDirEntry(e);
+			printf("cluster %d marked as inconsistent. clusters read: %d,"
+				"clusters expected: %d\n\n", cur, nread, nclusters);
+			free(*buffer);
 			*buffer = NULL;
-			return -2;*/
+			return -2;
 		}
 		
 		lseek(fid, (cur + dataStart) * clusterSize, SEEK_SET);
-		if(clusterSize != (nbytes = read(fid, (*buffer) + offset, clusterSize))){
-			printf("Disk read error, expected %d bytes, read %d\n", clusterSize, nbytes);
+		nbytes = read(fid, (*buffer) + offset, clusterSize);
+		if(clusterSize != nbytes){
+			printf("Disk read error, expected %d bytes, read %d\n",
+				clusterSize, nbytes);
 			printf("Attempting to read cluster %d\n", cur);
 			return -1;
 		}
@@ -189,9 +216,17 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char ** buffer){
 	
 	if(next < 0x0FF0){
 		/* not a normal end of chain */
-		printf("Broken file, read %d clusters, expected %d, next cluster would be at %d\n",
-				nread, nclusters, next);
+		if(nread == nclusters){
+			printf("Incorrect file length, read %d cluster(s), next cluster"
+			" would be at %d but should be a end of chain marker.\n",
+				nread, next);
+			printDirEntry(e);
+			puts("");
+		}
 		return -2;
+	}else if(nread != nclusters){
+		printf("Incorrect file length, chain ends at cluster %d, but the file"
+			" length gives %d clusters.\n", nread, nclusters);
 	}
 	return nclusters;
 }
@@ -199,19 +234,23 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char ** buffer){
 /* Read the entries in a directory (recursively).
    Files are read in, allowing further processing if desired
 */
-int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT){
+int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT, int entries){
 	int i, j;
 	char * buffer = NULL;
 	int nclusters = 0;
-	for(j = i = 0; i < Nentries; i = j + 1){
-		printDirEntry(dirs + i);
+	for(j = i = 0; i < Nentries; i = j + 1){			
+		/*printDirEntry(dirs + i);*/
 		for(j = i; j < Nentries; j++){
 			if(dirs[j + 1].attrib != 0x0f) break;
-			printDirEntry(dirs + j);
+			/*printDirEntry(dirs + j); */
 		}
 		if((dirs[i].name[0] == 0x05) || (dirs[i].name[0] == 0xe5)){
-			printf("Deleted entry\n");
+			/*printf("Deleted entry\n");*/
 		}else if(dirs[i].name[0] > ' ' && (dirs[i].name[0] != '.')){
+			if(checkChain(dirs[i].start, sFAT, entries)){
+				printDirEntry(dirs + i);
+				puts("");
+			}
 			free(buffer);
 			nclusters = bufferFile(dirs + i, sFAT, &buffer);
 			if(buffer && (dirs[i].attrib & 0x10) && (nclusters > 0)){
@@ -219,8 +258,10 @@ int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT){
 				/* this must be another directory
 				   follow it now */
 				N = nclusters * clusterSize / sizeof(dirEntry);
-				printf("Reading directory\n");
-				readDirectory((dirEntry *) buffer, N, sFAT);
+				/*printf("Reading directory\n");
+				printDirEntry(dirs + i);
+				printf("with %d subitems\n", N);*/
+				readDirectory((dirEntry *) buffer, N, sFAT, entries);
 			} 
 		}
 	}
@@ -239,32 +280,10 @@ void expandFAT(unsigned char *FAT, unsigned short *sFAT, int entries){
 	}
 }
 
-int findLoop(unsigned short start, unsigned short *sFAT, int entries){
-	unsigned char *tmp = calloc(entries, 1);
-	unsigned short next = start;
-	printf("\tSearching loops in FAT from index %hu\n", start);
-	while(next > 2 && next < 0xFF0){
-		tmp[next]++;
-		if(tmp[next] > 1){
-			printf("\t\tFound loop at index %hu\n", next);
-			return 1;
-		}
-		
-		next = sFAT[next];
-	}
-	if(next < 3){
-		printf("\t\tFound empty marker in chain\n");
-		return 1;
-	}
-	printf("\tEnd of loop search\n");
-	return 0;
-}
-
 void compareFATs(unsigned short *sFAT1, unsigned short *sFAT2, int entries){
 	int i;
 	badIndices = calloc(entries, 1);
 	
-	printf("\nChecking FAT's for inconsistency\n");
 	for(i = 0; i < entries; i++){
 		if((sFAT1[i] && sFAT1[i] < 3)
 			|| (sFAT1[i] > entries && sFAT1[i] < 0xFF0)
@@ -278,16 +297,39 @@ void compareFATs(unsigned short *sFAT1, unsigned short *sFAT2, int entries){
 		}
 	
 		if(sFAT1[i] != sFAT2[i]){
-			printf("FAT inconsistency at index %d (%hu/%hu)\n", i, sFAT1[i], 
-				sFAT2[i]);
-			if(findLoop(i, sFAT1, entries)){
+			printf("FAT inconsistency at index %d (fat1/fat2: %hu/%hu)\n",
+				i, sFAT1[i], sFAT2[i]);
+			if(checkChain(i, sFAT1, entries)){
 				badIndices[i] = 1;
-				printf("Trying FAT 2\n");
-				findLoop(i, sFAT2, entries);
 			}
+			puts("");
 		}
 	}
-	printf("End of FAT check\n\n");
+}
+
+/* Check indices in FAT for multiple links to one index. */
+void checkIndices(unsigned short *sFAT, int entries){
+	unsigned char countTable[entries];
+	int i;
+	
+	for(i = 2; i < entries; i++){
+		countTable[i] = 0;
+	}
+	
+	for(i = 2; i < entries; i++){
+		if(sFAT[i] > 2 && sFAT[i] < 0xFF0){
+			countTable[sFAT[i]]++;
+		}
+	}
+	
+	for(i = 2; i < entries; i++){
+		if(countTable[i] > 1){
+			badIndices[i] = 1;
+			printf("Double link found at index %d; referred to from %hu"
+				" indexes\n", i, countTable[i]);
+		
+		}
+	}
 }
 
 /* We'll allow for at most two FATs on a floppy, both as 12 bit values and
@@ -367,25 +409,33 @@ int main(int argc, char * argv[]){
 		}
 	}
 	
-	/* Expand the FAT's to 16 bit shorts. */
+	/*expand the FAT's to 16 bit shorts. */
 	sFAT1 = calloc(entries + 1, sizeof(unsigned short));
 	sFAT2 = calloc(entries + 1, sizeof(unsigned short));
 	expandFAT(FAT1, sFAT1, entries);
 	expandFAT(FAT2, sFAT2, entries);
-	
-	/* Check FAT's for inconsistency. */
-	compareFATs(sFAT1, sFAT2, entries);
 	
 	i = bps / sizeof(dirEntry);
 	NdirSectors = (Ndirs + i - 1) / i;
 	dataStart = 1 + (bootsector.NFats * NFATbytes) / bps + NdirSectors - 2;
 	dirs = calloc(Ndirs, sizeof(dirEntry));
 	printf("dataStart = %d\n", dataStart);
+	
+	printf("\nChecking FAT\n");
+	/* Check FAT's for inconsistency. */
+	compareFATs(sFAT1, sFAT2, entries);
+	
+	checkIndices(sFAT1, entries);
+	
+
 	nread = read(fid, dirs, bps * NdirSectors);
 	if(nread != bps * NdirSectors){
 		printf("Unexpected EOF\n");
+		return 1;
 	}
-	readDirectory(dirs, Ndirs, sFAT1);
+	
+	printf("\nChecking files\n");
+	readDirectory(dirs, Ndirs, sFAT1, entries);
 	
 	return 0;
 }
