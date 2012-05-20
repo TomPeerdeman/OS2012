@@ -1,0 +1,9 @@
+\BOOKMARK [1][-]{section.1}{Inleiding}{}
+\BOOKMARK [1][-]{section.2}{Fouten in de FAT}{}
+\BOOKMARK [2][-]{subsection.2.1}{Fouten overzicht}{section.2}
+\BOOKMARK [2][-]{subsection.2.2}{Dubbel gebruik van een deel van de FAT}{section.2}
+\BOOKMARK [2][-]{subsection.2.3}{Loops}{section.2}
+\BOOKMARK [2][-]{subsection.2.4}{Geen overeenkomende lengte}{section.2}
+\BOOKMARK [2][-]{subsection.2.5}{Loops}{section.2}
+\BOOKMARK [2][-]{subsection.2.6}{Incorrect eindigende link}{section.2}
+\BOOKMARK [2][-]{subsection.2.7}{Een bestand dat niet voorkomt in de FAT}{section.2}

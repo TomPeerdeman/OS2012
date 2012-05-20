@@ -1,12 +1,20 @@
 \documentclass[11pt]{article}
 \usepackage{fancyhdr}
 \usepackage[usenames, dvipsnames]{xcolor}
-\usepackage{amsmath,amssymb,graphicx}
+\usepackage{amsmath,amssymb,graphicx,hyperref}
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \pagestyle{fancy}
 \lfoot{\small \color{gray}Tom Peerdeman \& Ren\'e Aparicio Saez}
 \cfoot{\thepage}
 \rfoot{\small \color{gray}Studentnr: 10266186 \& 10214054}
+\lhead{\small \color{gray}Opgave 4: Beschadigingen in een FAT-12}
 \begin{document}
 	\begin{titlepage}
 	\begin{center}
@@ -27,11 +35,10 @@
 	\end{center}
 	\end{titlepage}
 
+	\tableofcontents
+	\newpage
 
-	\begin{center}
-		\textbf{\underline{\large Opgave 4: Beschadigingen in een FAT-12 localiseren}}
-	\end{center}
-	\textbf{Inleiding}\\
+	\section{Inleiding}
 	Een FAT (File Allocation Table) is een single linked list. Deze bevat 'entries' voor clusters. Iedere entry geeft aan waar de volgende cluster gevonden kan worden. Of, als er geen nieuwe clusters meer zijn, dat alle clusters opgehaald zijn. Deze clusters samen vormen een file. Dit is een eenvoudige en betrouwbare manier om files op te slaan. Echter kunnen er wel fouten optreden in de FAT. Specifiek wordt er gekeken naar de 12 bits variant, FAT-12.
 	\begin{figure}[h]
 		\begin{center}
@@ -39,23 +46,42 @@
 		\caption{Schematische weergave van de werking van een 	FAT}
 		\end{center}
 	\end{figure}
+
 	\newpage
-	\textbf{Fouten overzicht}\\
+	\section{Fouten in de FAT}
+	\subsection{Fouten overzicht}
 	Er zijn verschillende soorten fouten die kunnen optreden in een FAT-12. Sommige fouten zijn eenvoudig op te lossen en op te sporen.\\\\
-	Mogelijke fouten in de FAT zijn bijvoorbeeld:
+	Enkele fouten in de FAT die zijn op te sporen zijn bijvoorbeeld:
 	\begin{itemize}
+		\item Dubbel gebruik van een deel van de FAT
+		\item Een file die twee keer voor komt in \'e\'en directory
+		\item Geen overeenkomende langte in de directory en het aantal clusters
 		\item Loops in de FAT
 		\begin{itemize}
 			\item Meerdere verwijzingen 
 		\end{itemize}
-		\item Dubbel gebruik van een deel van de FAT
-		\item Twee dezelfde files in \'e\'en directory
-		\item Twee dezelfde files in verschillende directory's
 		\item Incorrect eindigende link
-		\item Een bestand komt nog voor in de FAT maar staat niet meer in de directory
 		\item Een bestand dat bestaat in de directory maar niet in de FAT
 	\end{itemize}
-	
+	Daarnaast zijn de volgende fouten niet op te sporen:
+	\begin{itemize}
+		\item Twee dezelfde files in verschillende directory's
+		\item Een bestand komt nog voor in de FAT maar staat niet meer in de directory
+	\end{itemize}
 
+	\subsection{Dubbel gebruik van een deel van de FAT}\label{sec:dubbel}
+	Een deel van de FAT mag niet dubbel gebruikt worden. Hiertoe wordt bijgehouden welke entries al gebruikt zijn. Wordt een entry dubbel gebruikt dan treedt er een fout op en wordt dit aangegeven.
+
+	\subsection{Loops}\label{sec:loops}
+	In een FAT kunnen loops optreden. Er wordt dan een deel van de FAT meerdere malen aangeroepen. In een FAT mag dit niet voorkomen (zie \ref{sec:dubbel}). Om een loop op te sporen wordt gekeken of er een index uit de FAT een tweede keer wordt aangeroepen. Is dit het geval dan wordt aangegeven dat er bij deze index een loop is gevonden.
+
+	\subsection{Geen overeenkomende lengte}\label{sec:lengte}
+
+	\subsection{Loops}\label{sec:loops}
+
+	\subsection{Incorrect eindigende link}\label{sec:iel}
+
+	\subsection{Een bestand dat niet voorkomt in de FAT}\label{sec:dir}
+	
 
 \end{document}
