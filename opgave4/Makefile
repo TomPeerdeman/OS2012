@@ -1,10 +1,10 @@
 #Programma
 
-#PROG=fat-extracter
-#INCL=FAT-12-extracter.o
+PROG=fat-extracter
+INCL=FAT-12-extracter.o
 
-PROG=fat-checker
-INCL=FAT-12-checker.o
+# PROG=fat-checker
+# INCL=FAT-12-checker.o
 
 FILE=disk-image
 

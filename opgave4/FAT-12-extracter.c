@@ -33,8 +33,7 @@
 /* The following structure describes the boot block - the first 512 bytes on
    the floppy disk
 */
-typedef struct BPB
-{
+typedef struct BPB{
    unsigned short BRA;		 /* Branch to boot code		   */
    unsigned short filler[3];   /* reserved for OEM			  */
    unsigned char  vsn[3];	  /* volume-serial number 24 bit   */
@@ -56,8 +55,7 @@ typedef struct BPB
    The definition is only valid on little-endian systems,
    due to the use of shorts.
 */
-typedef struct DIRENTRY
-{
+typedef struct DIRENTRY{
 	unsigned char name[8];
 	unsigned char ext[3];
 	unsigned char attrib;
@@ -88,41 +86,31 @@ static int fid;
 
 /* print a directory entry
 */
-void
-printDirEntry(dirEntry * e)
-{
+void printDirEntry(dirEntry * e){
 	int i;
 	short *zero = (short *) e->zero;
-	if (e->attrib == 0x0f)
-	{
+	if(e->attrib == 0x0f){
 		printf("LFN:");
-		for (i = 1; i < 32; i++)
-		{
-			if (e->name[i] >= ' ') printf("%c", e->name[i]);
-			else if (e->name[i]) printf("&%x;", e->name[i]);
+		for(i = 1; i < 32; i++){
+			if(e->name[i] >= ' ') printf("%c", e->name[i]);
+			else if(e->name[i]) printf("&%x;", e->name[i]);
 		}
 		printf("\n");
-	} else
-	{
-		for (i = 0; i < 8; i++)
-		{
-			if (e->name[i] < ' ')
-			{
+	}else if(e->name[0] != 0){
+		for(i = 0; i < 8; i++){
+			if(e->name[i] < ' '){
 				break;
 			}
 			printf("%c", e->name[i]);
 		}
-		for (i = 0; i < 3; i++)
-		{
-			if (e->ext[i] < ' ')
-			{
+		for(i = 0; i < 3; i++){
+			if(e->ext[i] < ' '){
 				break;
 			}
 			printf("%c", e->ext[i]);
 		}
 		printf(" (%x)", e->attrib);
-		for (i = 0; i < 5; i++)
-		{
+		for(i = 0; i < 5; i++){
 			printf(" %hu", zero[i]);
 		}
 		printf(" time: %hu date: %hu start: %hu length: %ld\n", e->time,
@@ -133,9 +121,7 @@ printDirEntry(dirEntry * e)
 /* The following code should obtain the total actual number of clusters
    in a chain starting at some directory-entry.start
 */
-int
-followDirEntry(dirEntry *e, unsigned short * sFAT)
-{
+int followDirEntry(dirEntry *e, unsigned short * sFAT){
 	int cur =e->start;
 	int next;
 	int nclusters = 0;
@@ -145,36 +131,31 @@ followDirEntry(dirEntry *e, unsigned short * sFAT)
 	printf("Following chain from %d\n", cur);
 	/* For directories a length of zero is generally specified.
 	   This code will thus read only a single cluster for directories. */
-	if (e->attrib == 0x0f)
-	{
+	if(e->attrib == 0x0f){
 		return 0;
 	}
-	if (e->attrib & 0x08)
-	{
+	if(e->attrib & 0x08){
 		printf("Volume label, not a file\n");
 		return 0;
 	}
-	if (cur < 2)
-	{
+	if(cur < 2){
 		printf("Not a valid starting cluster\n");
 		return 0;
 	}
-	do
-	{
+	
+	do{
 		nclusters++;
 		next = sFAT[cur];
 		printf("%d ", next);
 		cur = next;
-	} while (next && (next < 0x0FF0) && (nclusters < nexpected));
+	}while(next && (next < 0x0FF0) && (nclusters < nexpected));
 	printf("\nNclusters = %d\n", nclusters);
 	return nclusters;
 }
 
 /* This routine will read a file from disk and store it in a buffer
 */
-int
-bufferFile(dirEntry *e, unsigned short * sFAT, char ** buffer)
-{
+int bufferFile(dirEntry *e, unsigned short * sFAT, char ** buffer){
 /* First find number of clusters in file */
 	int cur = e->start;
 	int nclusters = followDirEntry(e, sFAT);
@@ -183,14 +164,12 @@ bufferFile(dirEntry *e, unsigned short * sFAT, char ** buffer)
 	int next;
 	int offset = 0;
 	(*buffer) = NULL;
-	if (nclusters == 0) return 0;
+	if(nclusters == 0) return 0;
 
 	*buffer = calloc(nclusters * bps * spc, 1);
-	do
-	{
+	do{
 		lseek(fid, (cur + dataStart) * clusterSize, SEEK_SET);
-		if (clusterSize != (nbytes = read(fid, (*buffer) + offset, clusterSize)))
-		{
+		if(clusterSize != (nbytes = read(fid, (*buffer) + offset, clusterSize))){
 			printf("Disk read error, expected %d bytes, read %d\n", clusterSize, nbytes);
 			printf("Attempting to read cluster %d\n", cur);
 			return -1;
@@ -199,9 +178,8 @@ bufferFile(dirEntry *e, unsigned short * sFAT, char ** buffer)
 		offset += clusterSize;
 		next = sFAT[cur];
 		cur = next;
-	} while (next && (next < 0x0FF0) && (nread < nclusters));
-	if (next < 0x0FF0)
-	{
+	}while(next && (next < 0x0FF0) && (nread < nclusters));
+	if(next < 0x0FF0){
 	/* not a normal end of chain */
 		printf("Broken file, read %d clusters, expected %d, next cluster would be at %d\n",
 				nread, nclusters, next);
@@ -213,30 +191,23 @@ bufferFile(dirEntry *e, unsigned short * sFAT, char ** buffer)
 /* Read the entries in a directory (recursively).
    Files are read in, allowing further processing if desired
 */
-int
-readDirectory(dirEntry *dirs, int Nentries, unsigned short * sFAT)
-{
+int readDirectory(dirEntry *dirs, int Nentries, unsigned short * sFAT){
 	int i, j;
 	char * buffer = NULL;
 	int nclusters = 0;
 	
-	for (j = i = 0; i < Nentries; i = j + 1)
-	{
+	for(j = i = 0; i < Nentries; i = j + 1){
 		printDirEntry(dirs + i);
-		for (j = i; j < Nentries; j++)
-		{
-			if (dirs[j + 1].attrib != 0x0f) break;
+		for(j = i; j < Nentries; j++){
+			if(dirs[j + 1].attrib != 0x0f) break;
 			printDirEntry(dirs + j);
 		}
-		if ((dirs[i].name[0] == 0x05) || (dirs[i].name[0] == 0xe5))
-		{
+		if((dirs[i].name[0] == 0x05) || (dirs[i].name[0] == 0xe5)){
 			printf("Deleted entry\n");
-		} else if (dirs[i].name[0] > ' ' && (dirs[i].name[0] != '.'))
-		{
+		}else if(dirs[i].name[0] > ' ' && (dirs[i].name[0] != '.')){
 			free(buffer);
 			nclusters = bufferFile(dirs + i, sFAT, &buffer);
-			if (buffer && (dirs[i].attrib & 0x10) && (nclusters > 0))
-			{
+			if(buffer && (dirs[i].attrib & 0x10) && (nclusters > 0)){
 				int N;
 				/* this must be another directory
 				   follow it now */
@@ -288,12 +259,13 @@ readDirectory(dirEntry *dirs, int Nentries, unsigned short * sFAT)
 				
 				buf[start] = '\0';
 				
-				printf("\tI will write the file %s\n", buf);
+				printf("\tI will write the file %s; length: %ld\n", buf, toLong(dirs[i].length));
 				
 				file = fopen(buf, "w+");
-				fwrite(buffer, 1, toShort(dirs[i].length), file);
+				if(fwrite(buffer, 1, toLong(dirs[i].length), file) != (unsigned long) toLong(dirs[i].length)){
+					printf("Error: write error\n");
+				}
 				fclose(file);
-
 			}			
 		}
 
@@ -304,13 +276,10 @@ readDirectory(dirEntry *dirs, int Nentries, unsigned short * sFAT)
 
 /* Convert a 12 bit FAT to 16bit short integers
 */
-void
-expandFAT(unsigned char * FAT, unsigned short * sFAT, int entries)
-{
+void expandFAT(unsigned char * FAT, unsigned short * sFAT, int entries){
 	int i;
 	int j;
-	for (i = 0, j = 0; i < entries; i += 2, j += 3)
-	{
+	for(i = 0, j = 0; i < entries; i += 2, j += 3){
 		sFAT[i] = FAT[j] + 256 * (FAT[j + 1] & 0xf);
 		sFAT[i + 1] = ((FAT[j + 1] >> 4) & 0xf) + 16 * FAT[j + 2];
 	}
@@ -319,13 +288,10 @@ expandFAT(unsigned char * FAT, unsigned short * sFAT, int entries)
 /* Convert a FAT represented as 16 bit shorts back to 12 bits to
    allow rewriting the FAT
 */
-void
-shrinkFAT(unsigned char * FAT, unsigned short * sFAT, int entries)
-{
+void shrinkFAT(unsigned char * FAT, unsigned short * sFAT, int entries){
 	int i;
 	int j;
-	for (i = 0, j = 0; i < entries; i += 2, j += 3)
-	{
+	for(i = 0, j = 0; i < entries; i += 2, j += 3){
 		FAT[j] = sFAT[i] & 0xff;
 		FAT[j + 1] = ((sFAT[i] & 0x0f00) >> 8) + ((sFAT[i + 1] & 0x000f) << 4);
 		FAT[j + 2] = (sFAT[i + 1] & 0x0ff0) >> 4;
@@ -341,9 +307,7 @@ unsigned char * FAT2;
 unsigned short * sFAT1;
 unsigned short * sFAT2;
 
-int
-main(int argc, char * argv[])
-{
+int main(int argc, char * argv[]){
 	BPB bootsector;
 	int rv = 0;
 	int entries;
@@ -358,11 +322,9 @@ main(int argc, char * argv[])
 	dirEntry *dirs;
 	
 	printf("size of bootsector = %u\n", sizeof(BPB));
-	if (argc > 1)
-	{
+	if(argc > 1){
 		fid = open(argv[1], O_RDONLY);
-	} else
-	{
+	}else{
 		printf("Need one file argument\n");
 		exit(-1);
 	}
@@ -379,8 +341,7 @@ main(int argc, char * argv[])
 		perror("Chdir");
 	}
 	
-	if ((sizeof(BPB) != (rv = read(fid, &bootsector, sizeof(BPB)))))
-	{
+	if((sizeof(BPB) != (rv = read(fid, &bootsector, sizeof(BPB))))){
 		printf("Read error %d\n", rv);
 		exit(-2);
 	}
@@ -396,8 +357,7 @@ main(int argc, char * argv[])
 	printf("spt = %hu\n", toShort(bootsector.spt));
 	printf("Nsides = %hu\n", toShort(bootsector.Nsides));
 	printf("Nhid = %hu\n", toShort(bootsector.Nhid));
-	if (!bps || !bootsector.NFats  || !toShort(bootsector.Nsects))
-	{
+	if(!bps || !bootsector.NFats  || !toShort(bootsector.Nsects)){
 		printf("This is not a FAT-12-type floppy format\n");
 		exit(-2);
 	}
@@ -417,15 +377,12 @@ main(int argc, char * argv[])
 	FAT1 = malloc(NFATbytes);
 	FAT2 = malloc(NFATbytes);
 	nread = read(fid, FAT1, NFATbytes);
-	if (nread != NFATbytes)
-	{
+	if(nread != NFATbytes){
 		printf("Unexpected EOF\n");
 	}
-	for (i = 1; i < bootsector.NFats; i++)
-	{
+	for(i = 1; i < bootsector.NFats; i++){
 		nread = read(fid, FAT2, NFATbytes);
-		if (nread != NFATbytes)
-		{
+		if(nread != NFATbytes){
 			printf("Unexpected EOF\n");
 		}
 	}
@@ -444,8 +401,7 @@ main(int argc, char * argv[])
 	dirs = calloc(Ndirs, sizeof(dirEntry));
 	printf("dataStart = %d\n", dataStart);
 	nread = read(fid, dirs, bps * NdirSectors);
-	if (nread != bps * NdirSectors)
-	{
+	if(nread != bps * NdirSectors){
 		printf("Unexpected EOF\n");
 	}
 	readDirectory(dirs, Ndirs, sFAT1);
