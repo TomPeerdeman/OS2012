@@ -7,3 +7,4 @@
 \contentsline {subsection}{\numberline {2.5}Loops}{4}{subsection.2.5}
 \contentsline {subsection}{\numberline {2.6}Incorrect eindigende link}{4}{subsection.2.6}
 \contentsline {subsection}{\numberline {2.7}Een bestand dat niet voorkomt in de FAT}{4}{subsection.2.7}
+\contentsline {section}{\numberline {3}Setup van het programma}{4}{section.3}

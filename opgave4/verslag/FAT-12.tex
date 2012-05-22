@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage{fancyhdr}
 \usepackage[usenames, dvipsnames]{xcolor}
-\usepackage{amsmath,amssymb,graphicx,hyperref}
+\usepackage{graphicx,hyperref}
 \hypersetup{
 	colorlinks,
 	citecolor=black,
@@ -11,9 +11,9 @@
 }
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \pagestyle{fancy}
-\lfoot{\small \color{gray}Tom Peerdeman \& Ren\'e Aparicio Saez}
+\lfoot{\small \color{gray}Tom Peerdeman - 10266186}
 \cfoot{\thepage}
-\rfoot{\small \color{gray}Studentnr: 10266186 \& 10214054}
+\rfoot{\small \color{gray}Ren\'e Aparicio Sa\'ez - 10214054}
 \lhead{\small \color{gray}Opgave 4: Beschadigingen in een FAT-12}
 \begin{document}
 	\begin{titlepage}
@@ -38,7 +38,7 @@
 	\tableofcontents
 	\newpage
 
-	\section{Inleiding}
+	\section{Inleiding}\label{sec:inleiding}
 	Een FAT (File Allocation Table) is een single linked list. Deze bevat 'entries' voor clusters. Iedere entry geeft aan waar de volgende cluster gevonden kan worden. Of, als er geen nieuwe clusters meer zijn, dat alle clusters opgehaald zijn. Deze clusters samen vormen een file. Dit is een eenvoudige en betrouwbare manier om files op te slaan. Echter kunnen er wel fouten optreden in de FAT. Specifiek wordt er gekeken naar de 12 bits variant, FAT-12.
 	\begin{figure}[h]
 		\begin{center}
@@ -48,8 +48,8 @@
 	\end{figure}
 
 	\newpage
-	\section{Fouten in de FAT}
-	\subsection{Fouten overzicht}
+	\section{Fouten in de FAT}\label{sec:fout}
+	\subsection{Fouten overzicht}\label{sec:overzicht}
 	Er zijn verschillende soorten fouten die kunnen optreden in een FAT-12. Sommige fouten zijn eenvoudig op te lossen en op te sporen.\\\\
 	Enkele fouten in de FAT die zijn op te sporen zijn bijvoorbeeld:
 	\begin{itemize}
@@ -82,6 +82,9 @@
 	\subsection{Incorrect eindigende link}\label{sec:iel}
 
 	\subsection{Een bestand dat niet voorkomt in de FAT}\label{sec:dir}
-	
 
+	\section{Setup van het programma}\label{sec:setup}
+	Om het programma te laten werken moeten alle files uit de gecomprimeerde map woorden gehaald en in een directory worden geplaatst. Vervolgens dient er via een commandshell genavigeerd te worden naar deze directory. Als de gebruiker in de juiste directory zit moet in de shell het commando 'make setup' worden uitgevoerd. Hiermee worden de juiste mappen aangemaakt die nodig zijn om de output in op te slaan. Als het eerste commando is uitgevoerd kan het volgende commando worden ingetypt. Dit is het commando 'make'. Alle code wordt nu gelinkt en gecompileerd. Zodra dit is gebeurd kan het programma worden gebruikt. De meest eenvoudige manier om alle bestanden in \'e\'en keer uit te voeren en alle uitvoer weg te laten schrijven is door het commando 'make run' uit te voeren. Alle uitvoer wordt per disk-image opgeslagen in de directory 'out'. De bestanden die iedere disk heeft gegenereerd staan in de directory 'extract'.
+	
+	
 \end{document}
