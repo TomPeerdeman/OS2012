@@ -331,7 +331,7 @@ void compareFATs(unsigned short *sFAT1, unsigned short *sFAT2, int entries){
 void checkFreeSpace(unsigned short *sFAT, int entries){
 	int i;
 	
-	for(i = 0; i < entries; i++){
+	for(i = 2; i < entries; i++){
 		if(indiceTable[i] == NULL && sFAT[i] != 0){
 			if(badIndices[i]){
 				printf("Note: cluster %d marked as inconsistent.\n", i);
@@ -340,6 +340,51 @@ void checkFreeSpace(unsigned short *sFAT, int entries){
 				"FAT (%hu)\n", i, sFAT[i]);
 		}
 	}
+}
+
+void checkLooseFiles(unsigned short *sFAT, int entries){
+	unsigned short next;
+	int i, j, linkFound, nclusters;
+	dirEntry *entry = calloc(1, sizeof(dirEntry));
+	entry->name[0] = 'L';
+	entry->name[1] = 'O';
+	entry->name[2] = 'O';
+	entry->name[3] = 'S';
+	entry->name[4] = 'E';
+	entry->name[5] = ' ';
+	entry->name[6] = 'F';
+	entry->name[7] = 'I';
+	entry->ext[0] = 'L';
+	entry->ext[1] = 'E';
+	entry->ext[2] = 'S';
+	
+	for(i = 2; i < entries; i++){
+		if(sFAT[i] > 1 && indiceTable[i] == NULL){
+			linkFound = 0;
+			for(j = 2; j < entries; j++){
+				if(sFAT[j] == i){
+					linkFound = 1;
+					break;
+				}
+			}
+			if(linkFound)continue;
+			
+			/* Loose file/dir found starting at index i. Now follow it */
+			next = i;
+			nclusters = 0;
+			while(next && next < 0xFF0){
+				indiceTable[i] = entry;
+				nclusters++;
+				next = sFAT[next];
+			}
+			printf("Loose file/directory found at index %d of %d "
+				"clusters. Size is between %d and %d bytes.\n", i,
+				nclusters, (clusterSize * (nclusters - 1) + 1), 
+				(clusterSize * nclusters));
+		}
+	}
+	
+	
 }
 
 /* We'll allow for at most two FATs on a floppy, both as 12 bit values and
@@ -446,6 +491,9 @@ int main(int argc, char * argv[]){
 	
 	printf("\n\nChecking files\n");
 	readDirectory(dirs, Ndirs, sFAT1, entries);
+	
+	printf("\nChecking unreferenced files\n");
+	checkLooseFiles(sFAT1, entries);
 	
 	printf("\nChecking free space\n");
 	checkFreeSpace(sFAT1, entries);
