@@ -1,20 +1,26 @@
 #Programma
 
-#~ PROG=fat-extracter
-#~ INCL=FAT-12-extracter.o
+PROG_EXTRACT=fat-extracter
+INCL_EXTRACT=FAT-12-extracter.o
 
-PROG=fat-checker
-INCL=FAT-12-checker.o
+PROG_CHECK=fat-checker
+INCL_CHECK=FAT-12-checker.o
 
 FILE=disk-image
 
+.PHONY: all
+all: $(PROG_CHECK) $(PROG_EXTRACT)
+
 #Compiler
 CC=gcc
-CFLAGS=-Wall -ansi -O2 -Wextra -Werror -g
+CFLAGS=-Wall -ansi -O3 -Wextra -Werror
 
 #Programma linken
-$(PROG): $(INCL)
-	$(CC) $(CFLAGS) -o $(PROG) $^ -lm
+$(PROG_CHECK): $(INCL_CHECK)
+	$(CC) $(CFLAGS) -o $(PROG_CHECK) $^ -lm
+	
+$(PROG_EXTRACT): $(INCL_EXTRACT)
+	$(CC) $(CFLAGS) -o $(PROG_EXTRACT) $^ -lm
 	
 #Bronbestanden compileren
 %.o: %.c
@@ -23,19 +29,33 @@ $(PROG): $(INCL)
 #Gecompileerde bestanden opschonen
 .PHONY: clean
 clean: 
-	rm -f *.o $(PROG) 
-	cd out && rm -f *.txt
+	rm -f *.o $(PROG_CHECK) $(PROG_EXTRACT)
+	cd out && cd checker && rm -f *.txt
+	cd out && cd extracter && rm -f *.txt
 	cd extract && rm -rf *
 
 #Alle programma's runnen, de uitvoer komt in de out dir
 .PHONY: run
-run: $(PROG)
+run: all
+	make extracter && make checker
+
+#Checker runnen
+.PHONY: checker
+checker: $(PROG_CHECK)
+	for number in 1 2 3 4 5 6; do \
+		./$(PROG_CHECK) $(FILE)$$number > out/checker/out$$number.txt ; \
+	done
+	
+#Extracter runnen
+.PHONY: extracter	
+extracter: $(PROG_CHECK)
 	cd extract && rm -rf *
 	for number in 1 2 3 4 5 6; do \
-		./$(PROG) $(FILE)$$number > out/out$$number.txt ; \
+		./$(PROG_EXTRACT) $(FILE)$$number > out/extracter/out$$number.txt ; \
 	done
 	
 .PHONY: setup
 setup:
 	mkdir out
+	cd out && mkdir checker && mkdir extracter
 	mkdir extract
