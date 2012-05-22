@@ -8,12 +8,13 @@ INCL_CHECK=FAT-12-checker.o
 
 FILE=disk-image
 
-.PHONY: all
-all: $(PROG_CHECK) $(PROG_EXTRACT)
-
 #Compiler
 CC=gcc
 CFLAGS=-Wall -ansi -O3 -Wextra -Werror
+
+#Alles compileren
+.PHONY: all
+all: $(PROG_CHECK) $(PROG_EXTRACT)
 
 #Programma linken
 $(PROG_CHECK): $(INCL_CHECK)
@@ -54,8 +55,11 @@ extracter: $(PROG_CHECK)
 		./$(PROG_EXTRACT) $(FILE)$$number > out/extracter/out$$number.txt ; \
 	done
 	
+#Setup
 .PHONY: setup
 setup:
+	rm -rf extract
+	rm -rf out
 	mkdir out
 	cd out && mkdir checker && mkdir extracter
 	mkdir extract
