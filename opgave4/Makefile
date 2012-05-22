@@ -4,7 +4,7 @@
 #~ INCL=FAT-12-extracter.o
 
 PROG=fat-checker
-INCL=FAT-12-checker-beta.o
+INCL=FAT-12-checker.o
 
 FILE=disk-image
 
