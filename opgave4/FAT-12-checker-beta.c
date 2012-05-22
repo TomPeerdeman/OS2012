@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <string.h>
 
 /* The following structure describes the boot block - the first 512 bytes on
    the floppy disk
@@ -156,7 +157,7 @@ int followDirEntry(dirEntry *e, unsigned short *sFAT){
 }
 
 int checkChain(unsigned short start, unsigned short *sFAT, int entries){
-	unsigned char *tmp = calloc(entries, 1);
+	unsigned char tmp[entries];
 	unsigned short next = start;
 	unsigned short prev = start;
 	
@@ -187,18 +188,23 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
 	int nread = 0;
 	int next;
 	int offset = 0;
-	int inTable = 0;
+	dirEntry *copy = NULL;
+	
 	(*buffer) = NULL;
 	if(nclusters == 0) return 0;
 
 	*buffer = calloc(nclusters * bps * spc, 1);
+	
 	do{
 		if(indiceTable[cur] == NULL){
-			indiceTable[cur] = e;
-			inTable = 1;
-		}else if(indiceTable[cur] == e){
+			if(copy == NULL){
+				copy = malloc(sizeof(dirEntry));
+				memcpy(copy, e, sizeof(dirEntry));
+			}
+			indiceTable[cur] = copy;
+		}else if(indiceTable[cur] == copy){
 			printf("Loop found at index %d\n", cur);
-			printDirEntry(e);
+			printDirEntry(copy);
 			puts("");
 		}else{
 			printf("Double link found at index %d for file (%p):\n", cur, e);
@@ -213,12 +219,8 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
 			printDirEntry(e);
 			printf("cluster %d marked as inconsistent. clusters read: %d,"
 				"clusters expected: %d\n\n", cur, nread, nclusters);
-			if(!inTable){
-				printf("\tFREE NOW, NOT IN TABLE 2\n");
-				printDirEntry(e);
-				/*free(*buffer);
-				*buffer = NULL;*/
-			}
+			free(*buffer);
+			(*buffer) = NULL;
 			return -2;
 		}
 		
@@ -235,13 +237,6 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
 		next = sFAT[cur];
 		cur = next;
 	}while(next && (next < 0x0FF0) && (nread < nclusters));
-	
-	if(!inTable){
-		printf("\tFREE NOW, NOT IN TABLE 1\n");
-		printDirEntry(e);
-		/*free(*buffer);
-		*buffer = NULL;*/
-	}
 	
 	if(next < 0x0FF0){
 		/* nread >= nclusters => chainlength > file length */
@@ -279,12 +274,10 @@ int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT, int fat){
 				printDirEntry(dirs + i);
 				puts("");
 			}
-			buffer = NULL;
+			free(buffer);
 			nclusters = bufferFile(dirs + i, sFAT, &buffer);
 			if(buffer && (dirs[i].attrib & 0x10) && (nclusters > 0)){
 				int N;
-				printf("Buffer at %p\n", buffer);
-				printDirEntry(dirs + 1);
 				/* this must be another directory
 				   follow it now */
 				N = nclusters * clusterSize / sizeof(dirEntry);
@@ -295,6 +288,7 @@ int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT, int fat){
 			} 
 		}
 	}
+	free(buffer);
 	return 0;
 }
 
@@ -469,16 +463,13 @@ int main(int argc, char * argv[]){
 	readDirectory(dirs, Ndirs, sFAT1, entries);
 	
 	printf("\nCleanup\n");
+
 	for(i = 0; i < entries; i++){
-		printf("try to free %d: %p\n", i, indiceTable[i]);
 		if(indiceTable[i] != NULL){
 			printDirEntry(indiceTable[i]);
 			
 			free(indiceTable[i]);
-			
-			printf("free'd\n");
-			indiceTable[i] = NULL;
-			
+		
 			/* Dont free array items with the same ptr as the on just free'd
 			 * or else the same memory will be free'd twice. */
 			for(j = i + 1; j < entries; j++){
@@ -486,10 +477,16 @@ int main(int argc, char * argv[]){
 					indiceTable[j] = NULL;
 				}
 			}
-			break;
+			
+			indiceTable[i] = NULL;
 		}
-		printf("after: %d: %p\n", i, indiceTable[i]);
 	}
+	
+	free(dirs);
+	free(sFAT1);
+	free(sFAT2);
+	free(FAT1);
+	free(FAT2);
 	free(indiceTable);
 	free(badIndices);
 	

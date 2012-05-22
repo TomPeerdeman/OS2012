@@ -1,16 +1,16 @@
 #Programma
 
-PROG=fat-extracter
-INCL=FAT-12-extracter.o
+#~ PROG=fat-extracter
+#~ INCL=FAT-12-extracter.o
 
-# PROG=fat-checker
-# INCL=FAT-12-checker.o
+PROG=fat-checker
+INCL=FAT-12-checker-beta.o
 
 FILE=disk-image
 
 #Compiler
 CC=gcc
-CFLAGS=-Wall -ansi -O2 -Wextra -Werror
+CFLAGS=-Wall -ansi -O2 -Wextra -Werror -g
 
 #Programma linken
 $(PROG): $(INCL)
