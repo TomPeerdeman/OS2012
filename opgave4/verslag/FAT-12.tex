@@ -70,21 +70,24 @@
 	\end{itemize}
 
 	\subsection{Dubbel gebruik van een deel van de FAT}\label{sec:dubbel}
-	Een deel van de FAT mag niet dubbel gebruikt worden. Hiertoe wordt bijgehouden welke entries al gebruikt zijn. Wordt een entry dubbel gebruikt dan treedt er een fout op en wordt dit aangegeven.
-
-	\subsection{Loops}\label{sec:loops}
-	In een FAT kunnen loops optreden. Er wordt dan een deel van de FAT meerdere malen aangeroepen. In een FAT mag dit niet voorkomen (zie \ref{sec:dubbel}). Om een loop op te sporen wordt gekeken of er een index uit de FAT een tweede keer wordt aangeroepen. Is dit het geval dan wordt aangegeven dat er bij deze index een loop is gevonden.
+	Een deel van de FAT mag niet dubbel gebruikt worden. Hiertoe wordt bijgehouden welke clusters al gelezen zijn. Wordt een cluster dubbel gelezen dan bestaat een file twee of meerdere malen. Of twee verschillende files die samen tot \'e\'en file mergen.
 
 	\subsection{Geen overeenkomende lengte}\label{sec:lengte}
+	De lengte van de file is bekend, echter kan het voorkomen dat deze lengte niet overenkomt met de FAT. Er treedt dan een fout op. De lengte in de FAT kan ofwel te lang ofwel te kort zijn. Is de lengte te lang dan is het aantal gelezen clusters groter dan het aantal clusters dat de file zou horen te hebben. Is de lengte te kort dan zijn er te weinig clusters gelezen dan zou moeten, de FAT denkt aan het einde te zijn terwijl dit niet zo is.
 
 	\subsection{Loops}\label{sec:loops}
+	In een FAT kunnen loops optreden. Er wordt dan een deel van de FAT meerdere malen aangeroepen. In een FAT mag dit niet voorkomen (zie \ref{sec:dubbel}). Om een loop op te sporen moet worden gekeken of een cluster dubbel gelezen wordt door \'e\'en file. Dit gebeurdt in dezelfde methode waarin al wordt gechecked of een file dubbel voorkomt. Wordt er een loop waargenomen dan moet deze worden verbroken, anders wordt er eeuwig doorgeloopd en wordt dezelfde foutmelding ook eeuwig gegeven.
 
-	\subsection{Incorrect eindigende link}\label{sec:iel}
-
+	\subsection{Incorrecte links}\label{sec:links}
+	Sommige links uit de FAT kunnen incorrect zijn. De aangegeven link behoord bijvoorbeeld niet bij de file in kwestie. Om deze foute links op te sporen worden FAT1 en FAT2 met elkaar vergeleken. Zijn ze niet aan hetzelfde dan is de link incorrect.\\
+\LARGE \textbf{dit deel hierboven moet nog wat duidelijker }
+\normalsize
 	\subsection{Een bestand dat niet voorkomt in de FAT}\label{sec:dir}
+	Het kan voorkomen dat een bestand niet (meer) bestaat in de FAT. 
 
 	\section{Setup van het programma}\label{sec:setup}
-	Om het programma te laten werken moeten alle files uit de gecomprimeerde map woorden gehaald en in een directory worden geplaatst. Vervolgens dient er via een commandshell genavigeerd te worden naar deze directory. Als de gebruiker in de juiste directory zit moet in de shell het commando 'make setup' worden uitgevoerd. Hiermee worden de juiste mappen aangemaakt die nodig zijn om de output in op te slaan. Als het eerste commando is uitgevoerd kan het volgende commando worden ingetypt. Dit is het commando 'make'. Alle code wordt nu gelinkt en gecompileerd. Zodra dit is gebeurd kan het programma worden gebruikt. De meest eenvoudige manier om alle bestanden in \'e\'en keer uit te voeren en alle uitvoer weg te laten schrijven is door het commando 'make run' uit te voeren. Alle uitvoer wordt per disk-image opgeslagen in de directory 'out'. De bestanden die iedere disk heeft gegenereerd staan in de directory 'extract'.
-	
+	Om het programma te laten werken moeten alle files uit de gecomprimeerde map woorden gehaald en in een directory worden geplaatst. Vervolgens dient er via een commandshell genavigeerd te worden naar deze directory. Als de gebruiker in de juiste directory zit moet in de shell het commando 'make setup' worden uitgevoerd. 
+Hiermee worden de juiste mappen aangemaakt die nodig zijn om de output in op te slaan. Als het eerste commando is uitgevoerd kan het volgende commando worden ingetypt. Dit is het commando 'make'. Alle code wordt nu gelinkt en gecompileerd tot twee werkende programma's: fat-checker \& fat-extracter. Zodra dit is gebeurd kunnen de programma's gebruikt worden. De meest eenvoudige manier om alle dick-images in \'e\'en keer uit te voeren en alle uitvoer weg te laten schrijven is door het commando 'make run' te gebruiken. Hierbij worden eerst alle files uit de disk-images weggeschreven door het programma fat-extract. De files worden per disk-image in de directory 'extract' opgeslagen. In de directory 'out' staan twee directorys, de uitvoer voor het wegschrijven van de files staat in de directory 'extracter'.
+Vervolgens wordt het tweede programma, fat-checker, uitgevoerd. De uitvoer van dit programma wordt weggeschreven in de directory 'checker', de tweede directory in 'out'.
 	
 \end{document}

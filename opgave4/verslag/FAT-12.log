@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.8)  22 MAY 2012 14:12
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.8)  24 MAY 2012 17:17
 entering extended mode
  %&-line parsing enabled.
 **FAT-12.tex
@@ -194,11 +194,7 @@ File: hpdftex.def 2009/10/09 v6.79a Hyperref driver for pdfTeX
 \Fld@listcount=\count94
 )
 Package hyperref Info: Option `colorlinks' set `true' on input line 11.
- (./FAT-12.aux
-
-LaTeX Warning: Label `sec:loops' multiply defined.
-
-)
+ (./FAT-12.aux)
 \openout1 = `FAT-12.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
@@ -215,7 +211,8 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
 LaTeX Font Info:    ... okay on input line 18.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 18.
 LaTeX Font Info:    ... okay on input line 18.
- (/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
+
+(/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count95
 \scratchdimen=\dimen108
@@ -258,10 +255,12 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 29.
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./FAT-12.toc)
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+
+Package hyperref Warning: old toc file detected, not used; run LaTeX again.
+
 \tf@toc=\write4
 \openout4 = `FAT-12.toc'.
-
 
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -274,7 +273,7 @@ been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.39 	\newpage
-               [1] <fatgoed.png, id=68, 253.69781pt x 283.0575pt>
+               [1] <fatgoed.png, id=17, 253.69781pt x 283.0575pt>
 File: fatgoed.png Graphic file (type png)
 
 <use fatgoed.png> [2 <./fatgoed.png (PNG copy)>]
@@ -288,22 +287,29 @@ File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 56.
- [3] [4] (./FAT-12.aux)
+
+
+LaTeX Warning: Reference `sec:dubbel' on page 3 undefined on input line 79.
+
+[3] [4] (./FAT-12.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 
-LaTeX Warning: There were multiply-defined labels.
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 4841 strings out of 495061
- 68573 string characters out of 1182621
- 147328 words of memory out of 3000000
- 7951 multiletter control sequences out of 15000+50000
- 9807 words of font info for 34 fonts, out of 3000000 for 9000
+ 4830 strings out of 495061
+ 68432 string characters out of 1182621
+ 145834 words of memory out of 3000000
+ 7942 multiletter control sequences out of 15000+50000
+ 10413 words of font info for 36 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 38i,11n,43p,948b,312s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,11n,43p,835b,312s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sha
 re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-te
 xlive/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-texlive/font
@@ -311,9 +317,9 @@ s/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/publ
 ic/amsfonts/cm/cmsl10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
 /cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.
 pfb>
-Output written on FAT-12.pdf (5 pages, 114984 bytes).
+Output written on FAT-12.pdf (5 pages, 107179 bytes).
 PDF statistics:
- 112 PDF objects out of 1000 (max. 8388607)
- 17 named destinations out of 1000 (max. 500000)
- 86 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 69 PDF objects out of 1000 (max. 8388607)
+ 16 named destinations out of 1000 (max. 500000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
