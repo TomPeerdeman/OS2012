@@ -319,7 +319,7 @@ void expandFAT(unsigned char *FAT, unsigned short *sFAT, int entries){
 	}
 }
 
-/* Compare FAT1 to FAT2, inconsistent links ad invalid links are makred as bad
+/* Compare FAT1 to FAT2, inconsistent links ad invalid links are marked as bad
  * and should be checked when accessed. */
 void compareFATs(unsigned short *sFAT1, unsigned short *sFAT2, int entries){
 	int i;
