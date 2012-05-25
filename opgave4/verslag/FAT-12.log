@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.8)  25 MAY 2012 19:14
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.8)  25 MAY 2012 19:53
 entering extended mode
  %&-line parsing enabled.
 **FAT-12.tex
@@ -334,7 +334,7 @@ s/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/publ
 ic/amsfonts/cm/cmsl10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
 /cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.
 pfb>
-Output written on FAT-12.pdf (10 pages, 140924 bytes).
+Output written on FAT-12.pdf (10 pages, 140915 bytes).
 PDF statistics:
  192 PDF objects out of 1000 (max. 8388607)
  33 named destinations out of 1000 (max. 500000)
