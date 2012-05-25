@@ -7,9 +7,9 @@
 \BOOKMARK [2][-]{subsection.3.3}{Loops}{section.3}
 \BOOKMARK [2][-]{subsection.3.4}{Incorrecte eindigende links}{section.3}
 \BOOKMARK [1][-]{section.4}{Overige fouten}{}
-\BOOKMARK [2][-]{subsection.4.1}{Een file dat niet voorkomt in de FAT}{section.4}
+\BOOKMARK [2][-]{subsection.4.1}{Een file dat niet voor komt in de FAT}{section.4}
 \BOOKMARK [2][-]{subsection.4.2}{Een file dat nog wel in de FAT staat maar niet in de directory}{section.4}
-\BOOKMARK [2][-]{subsection.4.3}{Vrije ruimte staat niet gemarkeert als vrije ruimte in de FAT}{section.4}
+\BOOKMARK [2][-]{subsection.4.3}{Vrije ruimte staat niet gemarkeerd als vrije ruimte in de FAT}{section.4}
 \BOOKMARK [2][-]{subsection.4.4}{0x05 / 0xE5}{section.4}
 \BOOKMARK [1][-]{section.5}{Setup van het programma}{}
 \BOOKMARK [1][-]{section.6}{Resultaten}{}

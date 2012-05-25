@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.8)  25 MAY 2012 17:46
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.8)  25 MAY 2012 19:14
 entering extended mode
  %&-line parsing enabled.
 **FAT-12.tex
@@ -322,7 +322,7 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 Here is how much of TeX's memory you used:
  4882 strings out of 495061
  69055 string characters out of 1182621
- 146902 words of memory out of 3000000
+ 146903 words of memory out of 3000000
  7976 multiletter control sequences out of 15000+50000
  9807 words of font info for 34 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
@@ -334,7 +334,7 @@ s/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/publ
 ic/amsfonts/cm/cmsl10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
 /cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.
 pfb>
-Output written on FAT-12.pdf (10 pages, 140866 bytes).
+Output written on FAT-12.pdf (10 pages, 140924 bytes).
 PDF statistics:
  192 PDF objects out of 1000 (max. 8388607)
  33 named destinations out of 1000 (max. 500000)

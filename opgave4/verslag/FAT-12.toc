@@ -7,9 +7,9 @@
 \contentsline {subsection}{\numberline {3.3}Loops}{4}{subsection.3.3}
 \contentsline {subsection}{\numberline {3.4}Incorrecte eindigende links}{5}{subsection.3.4}
 \contentsline {section}{\numberline {4}Overige fouten}{6}{section.4}
-\contentsline {subsection}{\numberline {4.1}Een file dat niet voorkomt in de FAT}{6}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.1}Een file dat niet voor komt in de FAT}{6}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Een file dat nog wel in de FAT staat maar niet in de directory}{6}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Vrije ruimte staat niet gemarkeert als vrije ruimte in de FAT}{6}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.3}Vrije ruimte staat niet gemarkeerd als vrije ruimte in de FAT}{6}{subsection.4.3}
 \contentsline {subsection}{\numberline {4.4}0x05 / 0xE5}{6}{subsection.4.4}
 \contentsline {section}{\numberline {5}Setup van het programma}{7}{section.5}
 \contentsline {section}{\numberline {6}Resultaten}{8}{section.6}
