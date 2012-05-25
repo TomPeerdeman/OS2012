@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.8)  25 MAY 2012 17:24
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.8)  25 MAY 2012 17:46
 entering extended mode
  %&-line parsing enabled.
 **FAT-12.tex
@@ -271,7 +271,7 @@ been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.39 	\newpage
-               [1] <fatgoed.png, id=89, 253.69781pt x 283.0575pt>
+               [1] <fatgoed.png, id=123, 253.69781pt x 283.0575pt>
 File: fatgoed.png Graphic file (type png)
 
 <use fatgoed.png> [2 <./fatgoed.png (PNG copy)>]
@@ -308,19 +308,22 @@ Missing character: There is no Ã in font cmr10!
 Missing character: There is no ¥ in font cmr10!
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ¥ in font cmr10!
-[8] (./FAT-12.aux)
+
+Overfull \hbox (6.00294pt too wide) in paragraph at lines 124--125
+\OT1/cmr/m/n/10.95 bruikte files in de FAT die niet wor-den weggeschreven, dit 
+zijn 'SCS-BLUE.gif'
+ []
+
+[8] [9] (./FAT-12.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 4870 strings out of 495061
- 68892 string characters out of 1182621
- 146622 words of memory out of 3000000
- 7967 multiletter control sequences out of 15000+50000
+ 4882 strings out of 495061
+ 69055 string characters out of 1182621
+ 146902 words of memory out of 3000000
+ 7976 multiletter control sequences out of 15000+50000
  9807 words of font info for 34 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  38i,12n,43p,879b,312s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -331,9 +334,9 @@ s/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/publ
 ic/amsfonts/cm/cmsl10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
 /cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.
 pfb>
-Output written on FAT-12.pdf (9 pages, 135246 bytes).
+Output written on FAT-12.pdf (10 pages, 140866 bytes).
 PDF statistics:
- 158 PDF objects out of 1000 (max. 8388607)
- 30 named destinations out of 1000 (max. 500000)
- 118 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 192 PDF objects out of 1000 (max. 8388607)
+ 33 named destinations out of 1000 (max. 500000)
+ 174 words of extra memory for PDF output out of 10000 (max. 10000000)
 

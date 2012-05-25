@@ -17,3 +17,5 @@
 \contentsline {subsection}{\numberline {6.2}Disk-image1}{8}{subsection.6.2}
 \contentsline {subsection}{\numberline {6.3}Disk-image2}{8}{subsection.6.3}
 \contentsline {subsection}{\numberline {6.4}Disk-image4}{8}{subsection.6.4}
+\contentsline {subsection}{\numberline {6.5}Disk-image5}{9}{subsection.6.5}
+\contentsline {subsection}{\numberline {6.6}Disk-image6}{9}{subsection.6.6}

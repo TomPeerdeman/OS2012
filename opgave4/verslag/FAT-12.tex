@@ -121,8 +121,12 @@ Vervolgens wordt het tweede programma, fat-checker, uitgevoerd. De uitvoer van d
 	De tweede disk-image bevat inconsistenties in de FAT op index 62 en indices 219 t/m 225. Bij het controleren van de files blijkt dat index 62 verwijst door naar een volgende cluster terwijl verwacht werd dat dit de laatste cluster zou zijn. Er is dus een fout met de lengte in de FAT en het resulteert in het niet kunnen schrijven van de file 'SHIRT.PNG'. Index 219 verwijst naar een lege cluster. Dit resulteert in het niet kunnen wegschrijven van de file 'STICK.GIF'.
 
 	\subsection{Disk-image4}\label{sec:disk4}
-	De vierde disk-image bevat geen inconsistensies in de FAT. Bij het controleren van de files blijken hier wel fouten op te treden. De file 'ICCS2010.GIF' kan niet worden weggeschreven omdat de lengte van deze file te lang is. Er zijn meer clusters dan wordt verwacht. De file 'SHIRT-BL.PNG' bestaat dubbel, maar wordt wel weggeschreven. 
+	De vierde disk-image bevat geen inconsistensies in de FAT. Bij het controleren van de files blijken hier wel fouten op te treden. De file 'ICCS2010.GIF' kan niet worden weggeschreven omdat de lengte van deze file te lang is. Er zijn meer clusters dan wordt verwacht. De file 'SHIRT-BL.PNG' bestaat dubbel, maar wordt wel weggeschreven. Er bevinden zich ook twee ongebruikte files in de FAT die niet worden weggeschreven, dit zijn 'SCS-BLUE.gif' en 'STICK.GIF'. 
 
+	\subsection{Disk-image5}\label{sec:disk5}
+	De vijfde disk-image bevat \'e\'en inconsistentie in de FAT op index 1523. Bij het controleren van de files blijkt dat de lengte niet te kloppen. Er wordt verwacht dat het einde van de clusters is bereikt maar er wordt nog doorverwezen naar een volgende cluster. Dit resulteert in het niet kunnen wegschrijven van de file 'SANTOSO.PDF'.
 
+	\subsection{Disk-image6}\label{sec:disk6}
+	De zesde en laatste disk-image bevat twee inconsistensies in de FAT op index 4 en index 218. Bij het controleren van de files blijkt dat op index 4 de lengte niet klopt. Er zouden meer clusters worden gelezen dan zou moeten. Hierdoor kan de directory 'ICCS' niet worden geschreven. Wat resulteert in het niet kunnen wegschrijven van de files die zich in deze map bevinden. Deze files worden aangegeven als 'loose file/directory' in de uitvoer van het programma. Bij index 218 klopt de lengte ook niet. Weer worden er meer clusters gelezen dan werd verwacht. Dit resulteert in het niet kunnen wegschrijven van de file 'CSP.PNG'.
 
 \end{document}
