@@ -89,9 +89,7 @@
 
 	\section{Overige fouten}\label{sec:overige}
 	\subsection{Een file die niet voor komt in de FAT}\label{sec:dir}
-	Het kan voorkomen dat een file niet (meer) bestaat in de FAT.\\
-\textbf{------------------\\dit deel hierboven moet nog wat duidelijker \\------------------}\\
-kan persoonlijk heir niet echt iets bij bedenken 
+	Het kan voorkomen dat een file niet (meer) bestaat in de FAT. Dit kan bijvoorbeeld gebeuren als \'e\'en van twee exact dezelfde files wordt verwijderd (zie \ref{sec:dubbel}). Het is niet mogelijk om dit te herstellen, de file kan immers niet meer opgebouwd worden via de clusters uit de FAT.
 
 	\subsection{Een file die nog wel in de FAT staat maar niet in de directory}\label{sec:fat}
 	Het is mogelijk dat een deel van de FAT nog in gebruik is maar de file waar ze bij horen niet meer bestaat. Het is niet eenvoudig om dit te herstellen omdat het aantal clusters waar het om gaat niet bekend is, aangezien er geen file meer is.
@@ -102,7 +100,9 @@ kan persoonlijk heir niet echt iets bij bedenken
 	\subsection{0x05 / 0xE5}\label{sec:0xE5}
 	Tijdens de experimenten bleek een deel van de FAT altijd gebruikt te worden maar niet bij een specifieke file te horen. Het bleek te gaan om clusters met de naam 0x05 of 0xE5. Een cluster krijgt deze naam toegewezen als de bijbehorende file verwijderd is. Op deze manier is het eventueel mogelijk om de file te recoveren. In het programma worden clusters die 0x05 of 0xE5 heten genegeerd. 
 
-	\section{Setup van het programma}\label{sec:setup}
+	\newpage
+
+	\section{Makefile / setup}\label{sec:setup}
 	Om het programma te laten werken moeten alle files uit de gecomprimeerde map woorden gehaald en in een directory worden geplaatst. Vervolgens dient er via een commandshell genavigeerd te worden naar deze directory. Als de gebruiker in de juiste directory zit moet in de shell het commando 'make setup' worden uitgevoerd. 
 Hiermee worden de juiste mappen aangemaakt die nodig zijn om de output in op te slaan. Als het eerste commando is uitgevoerd kan het volgende commando worden ingetypt. Dit is het commando 'make'. Alle code wordt nu gelinkt en gecompileerd tot twee werkende programma's: fat-checker \& fat-extracter. Zodra dit is gebeurd kunnen de programma's gebruikt worden. De meest eenvoudige manier om alle dick-images in \'e\'en keer uit te voeren en alle uitvoer weg te laten schrijven is door het commando 'make run' te gebruiken. Hierbij worden eerst alle files uit de disk-images weggeschreven door het programma fat-extract. De files worden per disk-image in de directory 'extract' opgeslagen. In de directory 'out' staan twee directories, de uitvoer voor het wegschrijven van de files staat in de directory 'extracter'.
 Vervolgens wordt het tweede programma, fat-checker, uitgevoerd. De uitvoer van dit programma wordt weggeschreven in de directory 'checker', de tweede directory in 'out'.

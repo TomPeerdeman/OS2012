@@ -11,7 +11,7 @@
 \contentsline {subsection}{\numberline {4.2}Een file die nog wel in de FAT staat maar niet in de directory}{6}{subsection.4.2}
 \contentsline {subsection}{\numberline {4.3}Vrije ruimte staat niet gemarkeerd als vrije ruimte in de FAT}{6}{subsection.4.3}
 \contentsline {subsection}{\numberline {4.4}0x05 / 0xE5}{6}{subsection.4.4}
-\contentsline {section}{\numberline {5}Setup van het programma}{7}{section.5}
+\contentsline {section}{\numberline {5}Makefile / setup}{7}{section.5}
 \contentsline {section}{\numberline {6}Resultaten}{8}{section.6}
 \contentsline {subsection}{\numberline {6.1}Disk-image3}{8}{subsection.6.1}
 \contentsline {subsection}{\numberline {6.2}Disk-image1}{8}{subsection.6.2}
