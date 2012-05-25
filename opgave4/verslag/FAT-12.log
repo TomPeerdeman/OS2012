@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.8)  25 MAY 2012 21:25
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.8)  25 MAY 2012 21:34
 entering extended mode
  %&-line parsing enabled.
 **FAT-12.tex
@@ -293,13 +293,13 @@ Package Fancyhdr Warning: \headheight is too small (13.59999pt):
  This may cause the page layout to be inconsistent, however.
 
 [4]
-Overfull \hbox (11.10286pt too wide) in paragraph at lines 86--87
+Overfull \hbox (11.10286pt too wide) in paragraph at lines 83--84
 \OT1/cmr/m/n/10.95 Sommige links uit de FAT kun-nen het einde in-cor-rect aange
 ven. De aangegeven
  []
 
 [5] [6] [7]
-Overfull \hbox (20.35963pt too wide) in paragraph at lines 115--116
+Overfull \hbox (20.35963pt too wide) in paragraph at lines 112--113
 \OT1/cmr/m/n/10.95 'ACRONIEM.GIF', 'ACRONIEM.PNG', 'CEN-TRAAL.GIF' en 'UVA300.P
 NG'. 
  []
@@ -309,7 +309,7 @@ Missing character: There is no ¥ in font cmr10!
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ¥ in font cmr10!
 
-Overfull \hbox (6.00294pt too wide) in paragraph at lines 124--125
+Overfull \hbox (6.00294pt too wide) in paragraph at lines 121--122
 \OT1/cmr/m/n/10.95 bruikte files in de FAT die niet wor-den weggeschreven, dit 
 zijn 'SCS-BLUE.gif'
  []
@@ -334,7 +334,7 @@ s/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/publ
 ic/amsfonts/cm/cmsl10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
 /cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.
 pfb>
-Output written on FAT-12.pdf (10 pages, 140774 bytes).
+Output written on FAT-12.pdf (10 pages, 140639 bytes).
 PDF statistics:
  193 PDF objects out of 1000 (max. 8388607)
  33 named destinations out of 1000 (max. 500000)
