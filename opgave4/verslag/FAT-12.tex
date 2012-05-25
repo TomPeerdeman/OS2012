@@ -21,7 +21,7 @@
 		\textsc{\Large Besturingssystemen}\\[0.5cm]
 		\HRule \\[0,4cm]
 		\textsc{\huge \bfseries FAT-12 errors}
-		\HRule \\[2cm]
+		\HRule \\[8cm]
 		\begin{minipage}{0.4\textwidth}
 			\begin{flushleft}\large
 				\emph{Auteurs: Tom Peerdeman \& Ren\'e Aparicio Saez}\\
@@ -48,6 +48,7 @@
 	\end{figure}
 
 	\newpage
+
 	\section{Fouten in de FAT}\label{sec:fout}
 	\subsection{Fouten overzicht}\label{sec:overzicht}
 	Er zijn verschillende soorten fouten die kunnen optreden in een FAT-12. Sommige fouten zijn eenvoudig op te lossen en op te sporen.\\\\
@@ -69,8 +70,11 @@
 		\item Een bestand komt nog voor in de FAT maar staat niet meer in de directory
 	\end{itemize}
 
+	\newpage
+
+	\section{Ge\"implementeerde fouten}\label{sec:impfout}
 	\subsection{Dubbel gebruik van een deel van de FAT / Dubbele file}\label{sec:dubbel}
-	Een deel van de FAT mag niet dubbel gebruikt worden. Hiertoe wordt bijgehouden welke clusters al gelezen zijn. Wordt een cluster dubbel gelezen dan bestaat een file twee of meerdere malen. Of twee verschillende files die samen tot \'e\'en file mergen. Dit kan opgelost worden door bijvoorbeeld de tweede file niet weg te schrijven, echter zal deze file dan dus verloren raken. Een andere mogelijkheid is het kopieren van de inhoud van de cluster naar een andere lege cluster voor de tweede file.
+	Een deel van de FAT mag niet dubbel gebruikt worden. Hiertoe wordt bijgehouden welke clusters al gelezen zijn. Wordt een cluster dubbel gelezen dan bestaat een file twee of meerdere malen. Of twee verschillende files gebruiken hetzelfde deel van een FAT. Bestaat een file twee keer, dan hebben ze dezelfde lengte en exact dezelfde FAT-index. Dit kan opgelost worden door de files samen te voegen tot \'e\'en. Is de lengte niet hetzelfde en verschillen er fat-indices dan wordt slechts een deel van de fat dubbel gebruikt. Dit kan opgelost worden door bijvoorbeeld de tweede file niet weg te schrijven, echter zal deze file dan dus verloren raken. 
 
 	\subsection{Geen overeenkomende lengte}\label{sec:lengte}
 	De lengte van de file is bekend, echter kan het voorkomen dat deze lengte niet overenkomt met de FAT. Er treedt dan een fout op. De lengte in de FAT kan ofwel te lang ofwel te kort zijn. Is de lengte te lang dan is het aantal gelezen clusters groter dan het aantal clusters dat de file zou horen te hebben. Is de lengte te kort dan zijn er te weinig clusters gelezen dan zou moeten, de FAT denkt aan het einde te zijn terwijl dit niet zo is. Als de lengte te lang is kan het probleem allicht opgelost worden door te proberen de file te schrijven als het juiste aantal in de FAT is bereikt. De clusters die nog zouden volgen volgens de FAT worden geleegd. Echter kan de file dan alsnog kapot zijn. Als de lengte te kort is dan valt er niks te doen en is het beter om de clusters te legen en de (kapotte) file te verwijderen.
@@ -78,13 +82,25 @@
 	\subsection{Loops}\label{sec:loops}
 	In een FAT kunnen loops optreden. Er wordt dan een deel van de FAT meerdere malen aangeroepen. In een FAT mag dit niet voorkomen (zie \ref{sec:dubbel}). Om een loop op te sporen moet worden gekeken of een cluster dubbel gelezen wordt door \'e\'en file. Dit gebeurdt in dezelfde methode waarin al wordt gechecked of een file dubbel voorkomt. Wordt er een loop waargenomen dan moet deze worden verbroken, anders wordt er eeuwig doorgeloopd en wordt dezelfde foutmelding ook eeuwig gegeven. De FAT zou alleen hersteld kunnen worden als de cluster vlak voor de herhaling van een cluster die al geweest is de laatste cluster zou zijn. Deze cluster moet dan voortaan verwijzen naar een terminerende cluster. Als deze cluster niet de laatste cluster van de file is kan er niet met zekerheid bepaald worden welke cluster er zou moeten volgen.
 
-	\subsection{Incorrecte links}\label{sec:links}
-	Sommige links uit de FAT kunnen incorrect zijn. De aangegeven link behoord bijvoorbeeld niet bij de file in kwestie. Om deze foute links op te sporen worden FAT1 en FAT2 met elkaar vergeleken. Zijn ze niet aan hetzelfde dan is de link incorrect.\\
-\textbf{------------------\\dit deel hierboven moet nog wat duidelijker \\------------------}
+	\subsection{Incorrecte eindigende links}\label{sec:links}
+	Sommige links uit de FAT kunnen het einde incorrect aangeven. De aangegeven link zou bijvoorbeeld nog verder willen gaan, terwijl er geen nieuwe clusters meer worden verwacht. Dit is te herstellen door de cluster die als laatst verwacht wordt aan te geven als laatste cluster.
 
+	\newpage
+
+	\section{Overige fouten}\label{sec:overige}
 	\subsection{Een bestand dat niet voorkomt in de FAT}\label{sec:dir}
 	Het kan voorkomen dat een bestand niet (meer) bestaat in de FAT.\\
-\textbf{------------------\\dit deel hierboven moet nog wat duidelijker \\------------------}
+\textbf{------------------\\dit deel hierboven moet nog wat duidelijker \\------------------}\\
+kan persoonlijk heir niet echt iets bij bedenken 
+
+	\subsection{Een bestand dat nog wel in de FAT staat maar niet in de directory}\label{sec:fat}
+	Het is mogelijk dat een deel van de FAT nog in gebruik is maar de file waar ze bij horen niet meer bestaat. Het is niet eenvoudig om dit te herstellen omdat het aantal clusters waar het om gaat niet bekend is, aangezien er geen file meer is.
+
+	\subsection{Vrije ruimte staat niet gemarkeert als vrije ruimte in de FAT}\label{sec:vrij}
+	Alle ruimte die niet gebruikt wordt door de FAt om files mee te maken is bezet. De vrije ruimte zou gebruikt kunnen worden om nieuwe files in op te slaan. Maar het is mogelijk dat deze vrije ruimte als bezet wordt aangegeven. Dit is alleen op te lossen als zich geen fouten voordoen in de FAT. Anders kan je zonder mogelijkheid weten of de ruimte vrij zou horen te zijn of gebruikt zou moeten worden door een file die behoord bij een kapot deel van de FAT.
+
+	\subsection{0x05 / 0xE5}\label{sec:0xE5}
+	Tijdens de experimenten bleek een deel van de FAT altijd gebruikt te worden maar niet bij een specifieke file te horen. Het bleek te gaan om clusters met de naam 0x05 of 0xE5. Een cluster krijgt deze naam toegewezen als de bijbehorende file verwijderd is. Op deze manier is het eventueel mogelijk om de file te recoveren. In het programma worden clusters die 0x05 of 0xE5 heten genegeerd. 
 
 	\section{Setup van het programma}\label{sec:setup}
 	Om het programma te laten werken moeten alle files uit de gecomprimeerde map woorden gehaald en in een directory worden geplaatst. Vervolgens dient er via een commandshell genavigeerd te worden naar deze directory. Als de gebruiker in de juiste directory zit moet in de shell het commando 'make setup' worden uitgevoerd. 
