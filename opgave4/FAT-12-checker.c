@@ -401,12 +401,13 @@ void checkLooseFiles(unsigned short *sFAT, int entries){
 			for(j = 2; j < entries; j++){
 				if(sFAT[j] == i){
 					linkFound = 1;
-					entryUsed = 1;
 					break;
 				}
 			}
 			/* Not a first cluster. */
 			if(linkFound)continue;
+			
+			entryUsed = 1;
 			
 			/* Loose file/dir found starting at index i. Now follow it */
 			next = i;

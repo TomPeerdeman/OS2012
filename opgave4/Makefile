@@ -10,7 +10,7 @@ FILE=disk-image
 
 #Compiler
 CC=gcc
-CFLAGS=-Wall -ansi -O3 -Wextra -Werror
+CFLAGS=-Wall -ansi -Wextra -Werror -g
 
 #Alles compileren
 .PHONY: all
