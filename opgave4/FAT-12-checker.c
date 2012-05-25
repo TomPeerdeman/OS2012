@@ -473,7 +473,7 @@ int main(int argc, char * argv[]){
 	int nread;
 	dirEntry *dirs;
 
-	printf("size of bootsector = %u\n", sizeof(BPB));
+	printf("size of bootsector = %u\n", (unsigned int) sizeof(BPB));
 	if(argc > 1){
 		fid = open(argv[1], O_RDONLY);
 	}else{
