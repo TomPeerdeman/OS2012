@@ -1,27 +1,41 @@
+/*
+ * Bestand : FAT-12-checker.c
+ *
+ *
+ * Auteur: René Aparicio Saez
+ * Student nr.: 10214054
+ *
+ * Auteur: Tom Peerdeman
+ * Student nr.: 10266186
+ *
+ * Datum: 25/05/2012
+ *
+ */
+
 /* In this file a simple simulated FAT12 type file system is defined.
-   The relevant structures in this file system will be:
-   1) The disk information block BPB, describing the properties of the
-	  other structures.
-   2) The FATs
-   3) The root directory. This directory must be present.
-   4) Data blocks
-   All structures will be allocated in units of 512 bytes, corresponding
-   to disk sectors.
-   Data blocks are allocate in clusters of spc sectors. The FATs refer
-   to clusters, not to sectors.
-   The BPB below was derived from the information provided on the
-   Atari TOS floppy format; it is also valid for MS DOS floppies,
-   but Atari TOS allows more freedom in choosing various values.
-
-   A start has been made to incorporate VFAT long file names (LFN),
-   but this was not completed.
-   Error checking is barely present - incorporating this is part
-   of an OS assignment.
-
-   G.D. van Albada
-   (c) IvI, Universiteit van Amsterdam, 2012
-   
-*/
+ * The relevant structures in this file system will be:
+ * 1) The disk information block BPB, describing the properties of the
+ * other structures.
+ * 2) The FATs
+ * 3) The root directory. This directory must be present.
+ * 4) Data blocks
+ * All structures will be allocated in units of 512 bytes, corresponding
+ * to disk sectors.
+ * Data blocks are allocate in clusters of spc sectors. The FATs refer
+ * to clusters, not to sectors.
+ * The BPB below was derived from the information provided on the
+ * Atari TOS floppy format; it is also valid for MS DOS floppies,
+ * but Atari TOS allows more freedom in choosing various values.
+ *
+ * A start has been made to incorporate VFAT long file names (LFN),
+ * but this was not completed.
+ * Error checking is barely present - incorporating this is part
+ * of an OS assignment.
+ *
+ * G.D. van Albada
+ * (c) IvI, Universiteit van Amsterdam, 2012
+ * 
+ */
 
 #include <stdio.h>
 #include <unistd.h>
@@ -31,30 +45,30 @@
 #include <string.h>
 
 /* The following structure describes the boot block - the first 512 bytes on
-   the floppy disk
-*/
+ * the floppy disk
+ */
 typedef struct BPB{
-   unsigned short BRA;		 /* Branch to boot code		   */
-   unsigned short filler[3];   /* reserved for OEM			  */
-   unsigned char  vsn[3];	  /* volume-serial number 24 bit   */
-   unsigned char  bps[2];	  /* bytes per sector			  */
-   unsigned char  spc;		 /* sectors per cluster		   */
-   unsigned char  res[2];	  /* reserved					  */
-   unsigned char  NFats;	   /* number of FATs				*/
-   unsigned char  Ndirs[2];	/* number of directory entries   */
-   unsigned char  Nsects[2];   /* number of sectors on media	*/
-   unsigned char  Media;	   /* Media descriptor			  */
-   unsigned char  spf[2];	  /* Sectors per FAT			   */
-   unsigned char  spt[2];	  /* Sectors per track			 */
-   unsigned char  Nsides[2];   /* Sides on media				*/
-   unsigned char  Nhid[2];	 /* hidden sectors				*/
-   unsigned char  boot[482];   /* boot code					 */
+   unsigned short BRA;		 	/* Branch to boot code			*/
+   unsigned short filler[3];	/* reserved for OEM				*/
+   unsigned char  vsn[3];		/* volume-serial number 24 bit	*/
+   unsigned char  bps[2];		/* bytes per sector				*/
+   unsigned char  spc;			/* sectors per cluster			*/
+   unsigned char  res[2];		/* reserved						*/
+   unsigned char  NFats;		/* number of FATs				*/
+   unsigned char  Ndirs[2];		/* number of directory entries	*/
+   unsigned char  Nsects[2];	/* number of sectors on media	*/
+   unsigned char  Media;		/* Media descriptor				*/
+   unsigned char  spf[2];		/* Sectors per FAT				*/
+   unsigned char  spt[2];		/* Sectors per track			*/
+   unsigned char  Nsides[2];	/* Sides on media				*/
+   unsigned char  Nhid[2];		/* hidden sectors				*/
+   unsigned char  boot[482];	/* boot code					*/
 } BPB;
 
 /* The following structure describes a directory entry.
-   The definition is only valid on little-endian systems,
-   due to the use of shorts.
-*/
+ * The definition is only valid on little-endian systems,
+ * due to the use of shorts.
+ */
 typedef struct DIRENTRY{
 	unsigned char name[8];
 	unsigned char ext[3];
@@ -72,25 +86,25 @@ static unsigned char *badIndices;
 static dirEntry **indiceTable;
 
 /* The following are default values. Most are recomputed on basis of the 
-   information in the bootblock.
-*/
+ * information in the bootblock.
+ */
 static int clusterSize = 1024;
 static int bps = 512;
 static int spc = 2;
 static int dataStart = 0;
 
 /* The file identified for the input file is stored here, as a global identifier
-*/
+ */
 static int fid;
 
 /* Two macros to help convert bytes to short values and short values
-   to 4 byte integers
-*/
+ * to 4 byte integers
+ */
 #define toShort(b) ((b[0] & 0xff) + 256 * (b[1] & 0xff))
 #define toLong(b) ((b[0] & 0xffff) + (((long)(b[1] & 0xffff)) << 16))
 
 /* print a directory entry
-*/
+ */
 void printDirEntry(dirEntry *e){
 	int i;
 	short *zero = (short *) e->zero;
@@ -124,8 +138,8 @@ void printDirEntry(dirEntry *e){
 }
 
 /* The following code should obtain the total actual number of clusters
-   in a chain starting at some directory-entry.start
-*/
+ * in a chain starting at some directory-entry.start
+ */
 int followDirEntry(dirEntry *e, unsigned short *sFAT){
 	int cur =e->start;
 	int next;
@@ -134,7 +148,8 @@ int followDirEntry(dirEntry *e, unsigned short *sFAT){
 	int nexpected = 0;
 	nexpected = (size + clusterSize - 1) / clusterSize;
 	/* For directories a length of zero is generally specified.
-	   This code will thus read only a single cluster for directories. */
+	 * This code will thus read only a single cluster for directories.
+	 */
 	if(e->attrib == 0x0f){
 		return 0;
 	}
@@ -156,9 +171,9 @@ int followDirEntry(dirEntry *e, unsigned short *sFAT){
 
 /* This routine will read a file from disk and store it in a buffer. This
  * routine will also check for errors while reading the file.
-*/
+ */
 int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
-/* First find number of clusters in file */
+	/* First find number of clusters in file */
 	int cur = e->start;
 	int nclusters = followDirEntry(e, sFAT);
 	int nbytes;
@@ -174,7 +189,8 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
 	*buffer = calloc(nclusters * bps * spc, 1);
 	
 	/* Copy the dir entry. When the buffer is overwritten, the dirEntry still
-	 * exists. */
+	 * exists.
+	 */
 	copy = malloc(sizeof(dirEntry));
 	memcpy(copy, e, sizeof(dirEntry));
 	
@@ -185,7 +201,8 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
 			indiceTable[cur] = copy;
 		}else if(indiceTable[cur] == copy){
 			/* Access a cluster which i already have accessed.
-			 * There must be a loop. */
+			 * There must be a loop.
+			 */
 			printf("Loop found at index %d\n", cur);
 			printDirEntry(copy);
 			puts("");
@@ -195,7 +212,8 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
 			return -2;
 		}else if(!memcmp(copy, indiceTable[cur], sizeof(dirEntry))){
 			/* Same entrydata but not the same pointer. Entry is
-			 * a duplicate. */
+			 * a duplicate.
+			 */
 			printf("Duplicate file found\n");
 			printDirEntry(copy);
 			puts("");
@@ -278,27 +296,23 @@ int bufferFile(dirEntry *e, unsigned short *sFAT, char **buffer){
 }
 	
 /* Read the entries in a directory (recursively).
-   Files are read in, allowing further processing if desired
-*/
+ * Files are read in, allowing further processing if desired
+ */
 int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT, int fat){
 	int i, j;
 	char *buffer = NULL;
 	int nclusters = 0;
 	for(j = i = 0; i < Nentries; i = j + 1){			
-		/*printDirEntry(dirs + i);*/
 		for(j = i; j < Nentries; j++){
 			if(dirs[j + 1].attrib != 0x0f) break;
-			/*printDirEntry(dirs + j); */
 		}
 		if((dirs[i].name[0] == 0x05) || (dirs[i].name[0] == 0xe5)){
-			/*printf("Deleted entry\n");*/
 		}else if(dirs[i].name[0] > ' ' && (dirs[i].name[0] != '.')){
 			free(buffer);
 			nclusters = bufferFile(dirs + i, sFAT, &buffer);
 			if(buffer && (dirs[i].attrib & 0x10) && (nclusters > 0)){
 				int N;
-				/* this must be another directory
-				   follow it now */
+				/* this must be another directory, follow it now. */
 				N = nclusters * clusterSize / sizeof(dirEntry);
 				readDirectory((dirEntry *) buffer, N, sFAT, fat);
 			} 
@@ -309,7 +323,7 @@ int readDirectory(dirEntry *dirs, int Nentries, unsigned short *sFAT, int fat){
 }
 
 /* Convert a 12 bit FAT to 16bit short integers
-*/
+ */
 void expandFAT(unsigned char *FAT, unsigned short *sFAT, int entries){
 	int i, j;
 
@@ -320,7 +334,8 @@ void expandFAT(unsigned char *FAT, unsigned short *sFAT, int entries){
 }
 
 /* Compare FAT1 to FAT2, inconsistent links ad invalid links are marked as bad
- * and should be checked when accessed. */
+ * and should be checked when accessed.
+ */
 void compareFATs(unsigned short *sFAT1, unsigned short *sFAT2, int entries){
 	int i;
 	
@@ -343,7 +358,7 @@ void compareFATs(unsigned short *sFAT1, unsigned short *sFAT2, int entries){
 }
 
 /* Check not used indices for empty markers.
-*/
+ */
 void checkFreeSpace(unsigned short *sFAT, int entries){
 	int i;
 	
@@ -359,7 +374,7 @@ void checkFreeSpace(unsigned short *sFAT, int entries){
 }
 
 /* Search files that are not listed in any directory.
-*/
+ */
 void checkLooseFiles(unsigned short *sFAT, int entries){
 	unsigned short next;
 	int i, j, linkFound, nclusters, entryUsed = 0;
@@ -403,7 +418,9 @@ void checkLooseFiles(unsigned short *sFAT, int entries){
 				next = sFAT[next];
 			}
 
-			/* Try to read first 5 bytes of cluster. */
+			/* Try to read first 5 bytes of cluster. bufferFile can't be 
+			 * used since all loose file use the same dir entry.
+			 */
 			lseek(fid, (i + dataStart) * clusterSize, SEEK_SET);
 			if(read(fid, buffer, 5) != 5){
 				perror("Disk error");
@@ -433,8 +450,8 @@ void checkLooseFiles(unsigned short *sFAT, int entries){
 }
 
 /* We'll allow for at most two FATs on a floppy, both as 12 bit values and
-   also converted to 16 bit values
-*/
+ * also converted to 16 bit values
+ */
 unsigned char *FAT1;
 unsigned char *FAT2;
 
@@ -548,17 +565,17 @@ int main(int argc, char * argv[]){
 	for(i = 0; i < entries; i++){
 		if(indiceTable[i] != NULL){
 			printDirEntry(indiceTable[i]);
-			
-			free(indiceTable[i]);
-		
-			/* Dont free array items with the same ptr as the on just free'd
-			 * or else the same memory will be free'd twice. */
+				
+			/* Dont free array items with the same ptr as the on to be
+			 *  free'd or else the same memory will be free'd twice.
+			 */
 			for(j = i + 1; j < entries; j++){
 				if(indiceTable[j] == indiceTable[i]){
 					indiceTable[j] = NULL;
 				}
 			}
 			
+			free(indiceTable[i]);
 			indiceTable[i] = NULL;
 		}
 	}
