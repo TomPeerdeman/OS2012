@@ -1,6 +1,13 @@
 /*
  * Bestand : FAT-12-checker.c
  *
+ * This file contains the implementstion of a fat 12 checker.
+ * The program takes a fat 12 disk image as argument. The program will then 
+ * check the fat entries for inconsistency between fat1 and fat2 and invalid
+ * values. The program will then check all the files for correct fat chains.
+ * Duplicate files will also be detected. After that the program will search
+ * for fat chains that have no directory entry. Clusters that are not used 
+ * will be checked as finish. 
  *
  * Auteur: René Aparicio Saez
  * Student nr.: 10214054
