@@ -2,6 +2,7 @@
 \usepackage{fancyhdr}
 \usepackage[usenames, dvipsnames]{xcolor}
 \usepackage{graphicx,hyperref}
+\usepackage[left=3cm,right=3cm]{geometry}
 \hypersetup{
 	colorlinks,
 	citecolor=black,
@@ -63,6 +64,22 @@
 	\section{Makefile / setup}\label{sec:makefile}
 	De makefile maakt twee programma's: worst-fit en first-fit. Om de programma's te maken dient het commando 'make' uitgevoerd te worden. De programma's worden dan gecompileerd en gelinkt. Om beide programma's snel achter elkaar te runnen moet eerst de directory 'out' worden gemaakt. Dit kan door middel van het commando 'make setup' uit te voeren. Vervolgens worden doormiddel van het commando 'make run' beide programma's uitgevoerd. De input die aan de programma's meegegeven wordt staat in de file 'input.txt' in de directory 'input'. De output die het programma geeft wordt weggeschreven naar 'worst-fit.txt' of 'first-fit.txt' in de directory out. Om de output snel te verwijderen kan het commando 'make cleanout' worden uitgevoerd. De uitvoer bestanden worden dan verwijderd. Om alle gecompileerd en gelinkt files te verwijderen kan het commando 'make clean' gebruikt worden. Om zowel de outputfiles als de gecompileerde en gelinkte files te verwijderen kan het commando 'make cleanall' gebruikt worden.
 
+	\section{Het programma}\label{sec:programma}
+		\subsection{Blok administratie}
+		In het programma wordt gebruik gemaakt van een administratie die vooraan het geheugenblok geplaatst is. Dit administratieblok bestaat uit vier delen:
+		\begin{itemize}
+			\item De lengte van het geheugenblok
+			\item De index van het administratieblok van het vorige geheugenblok
+			\item De index van het administratieblok van het volgende geheugenblok
+			\item De status van het geheugenblok, is deze vrij of bezet.
+		\end{itemize}
+		Al deze delen worden in het geheugen gerepresenteerd als 16 bit shorts. het totale administratieblok is dus 64 bits.
+		Het programma is zelf in staat om te ontdekken op wat voor machine het draait.
+		Als het programma op een 32 bits machine draait zal het programma mem-access-32.c gebruiken.
+		Hierin wordt het administratieblok als twee 32 bits longs gerepresenteerd.
+		Als het programma op een 64 bits machine gedraaid wordt zal het automatisch mem-access-64.c gebruiken.
+		Dit zorgt er voor dat het gehele administratieblok in een 64 bits long geplaatst word.
+		
 	\section{Resultaten}\label{sec:resultaten}
 
 
