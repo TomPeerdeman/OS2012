@@ -51,3 +51,9 @@ cleanout:
 #Alles opschonen
 .PHONY: cleanall
 cleanall: cleanout clean
+
+#Setup
+.PHONY: setup
+setup:
+	rm -rf out
+	mkdir out
