@@ -9,7 +9,7 @@ SEED=10
 
 #Compiler
 CC=gcc
-CFLAGS=-Wall -ansi -O2 -Wextra -Werror
+CFLAGS=-Wall -ansi -O3 -Wextra -Werror
 
 #Zoek de systeem architectuur op
 ARCH := $(shell getconf LONG_BIT)

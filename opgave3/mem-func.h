@@ -1,3 +1,16 @@
+/*
+ * Bestand : mem-func.h
+ *
+ * Auteur: René Aparicio Saez
+ * Student nr.: 10214054
+ *
+ * Auteur: Tom Peerdeman
+ * Student nr.: 10266186
+ *
+ * Datum: 02/06/2012
+ *
+ */
+ 
 #ifndef MEM_FUNC_H
 #define MEM_FUNC_H
 
@@ -42,6 +55,8 @@
 #endif
 #endif
 
+/* Default x86. Stel het systeem was toch 64 bits dan werkt het evengoed, 
+ * er wordt alleen meer geheugen voor de administartie gebruikt dan nodig. */
 #ifndef ADMIN_SIZE
 #define ADMIN_SIZE 2
 #endif

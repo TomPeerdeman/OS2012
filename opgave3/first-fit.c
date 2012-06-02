@@ -1,7 +1,20 @@
+/*
+ * Bestand : first-fit.c
+ *
+ * Dit bestand bevat de implementatie voor de first-fit memory scheduler.
+ *
+ * Auteur: René Aparicio Saez
+ * Student nr.: 10214054
+ *
+ * Auteur: Tom Peerdeman
+ * Student nr.: 10266186
+ *
+ * Datum: 02/06/2012
+ *
+ */
+
 #include "mem_alloc.h"
 #include "mem-func.h"
-
-#include <stdio.h>
 
 void mem_init(long memory[MEM_SIZE]){
 	mem = memory;
@@ -13,8 +26,6 @@ void mem_init(long memory[MEM_SIZE]){
 	
 	/* Eerste vrije blok. */
 	new_block(2, (MEM_SIZE - ADMIN_SIZE - 2), 0, 0);
-	
-	printf("ARCH: %d\n", ADMIN_SIZE);
 }
 
 long  mem_get(long request){
@@ -24,6 +35,7 @@ long  mem_get(long request){
 
 	while(idx != 0){
 		if(get_length(idx) >= l && get_free(idx)){
+			/* Gat gevonden waar de aanvraag in past. */
 			lidx = idx;
 			l = get_length(idx);
 			break;
@@ -68,6 +80,9 @@ void mem_available(long *empty, long *large, long *n_holes){
 	while(idx != 0){
 		next = get_next(idx);
 		prev = get_prev(idx);
+		/* Blok is een gat als het vrij is en de omringende blokken zijn
+		 * niet vrij of bestaan niet (als dit blok het eerste of laatste
+		 * blok is) */
 		if(get_free(idx) && (
 				(next && prev && !get_free(next) && !get_free(prev))
 				|| (!prev && next && !get_free(next))
@@ -76,6 +91,7 @@ void mem_available(long *empty, long *large, long *n_holes){
 			)
 		){
 			if(get_length(idx) > *large){
+				/* Nieuw grootste gat gevonden. */
 				*large = get_length(idx);
 			}
 			*n_holes += 1;

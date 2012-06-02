@@ -1,3 +1,18 @@
+/*
+ * Bestand : worst-fit.c
+ *
+ * Dit bestand bevat de implementatie voor de worst-fit memory scheduler.
+ *
+ * Auteur: René Aparicio Saez
+ * Student nr.: 10214054
+ *
+ * Auteur: Tom Peerdeman
+ * Student nr.: 10266186
+ *
+ * Datum: 02/06/2012
+ *
+ */
+
 #include "mem_alloc.h"
 #include "mem-func.h"
 
@@ -22,6 +37,10 @@ long  mem_get(long request){
 		if(get_length(idx) >= l && get_free(idx)){
 			lidx = idx;
 			l = get_length(idx);
+			if(l == request){
+				/* Gat gevonden waar de aanvraag precies in past. */
+				break;
+			}
 		}
 		
 		idx = get_next(idx);
@@ -63,6 +82,9 @@ void mem_available(long *empty, long *large, long *n_holes){
 	while(idx != 0){
 		next = get_next(idx);
 		prev = get_prev(idx);
+		/* Blok is een gat als het vrij is en de omringende blokken zijn
+		 * niet vrij of bestaan niet (als dit blok het eerste of laatste
+		 * blok is) */
 		if(get_free(idx) && (
 				(next && prev && !get_free(next) && !get_free(prev))
 				|| (!prev && next && !get_free(next))
@@ -71,6 +93,7 @@ void mem_available(long *empty, long *large, long *n_holes){
 			)
 		){
 			if(get_length(idx) > *large){
+				/* Nieuw grootste gat gevonden. */
 				*large = get_length(idx);
 			}
 			*n_holes += 1;

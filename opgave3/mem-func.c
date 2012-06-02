@@ -1,3 +1,19 @@
+/*
+ * Bestand : mem-func.c
+ *
+ * Dit bestand bevat de implementatie voor de functies die de toewijzing en
+ * het vrijgeven van een blok regelen.
+ *
+ * Auteur: René Aparicio Saez
+ * Student nr.: 10214054
+ *
+ * Auteur: Tom Peerdeman
+ * Student nr.: 10266186
+ *
+ * Datum: 02/06/2012
+ *
+ */
+
 #include "mem-func.h"
 
 /* Deze methode maakt een nieuw vrij blok aan met als eigenschappen de
@@ -10,7 +26,8 @@ void new_block(long index, long length, long prev, long next){
 }
 
 /* Deze methode wijst length woorden toe aan een proces. De overgebleven
- * woorden worden gezien als nieuw vrij blok. */
+ * woorden worden gezien als nieuw vrij blok indien mogelijk, anders wordt de
+ * overgebleven ruimte toegewezen aan het aanvragende proces. */
 int split_block(long index, long length){
 	long blockleng = get_length(index);
 	long newidx = index + length + ADMIN_SIZE;
@@ -50,7 +67,7 @@ int split_block(long index, long length){
 }
 
 /* Deze methode zet het blok op index op vrij, indien mogelijk fuseert het
- * met omringende vrije blokken. */
+ * met omringende vrije blokken tot een groot vrij blok. */
 void free_block(long index){
 	long prev = get_prev(index);
 	long next = get_next(index);
