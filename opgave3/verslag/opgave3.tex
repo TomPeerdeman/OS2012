@@ -64,22 +64,55 @@
 	\section{Makefile / setup}\label{sec:makefile}
 	De makefile maakt twee programma's: worst-fit en first-fit. Om de programma's te maken dient het commando 'make' uitgevoerd te worden. De programma's worden dan gecompileerd en gelinkt. Om beide programma's snel achter elkaar te runnen moet eerst de directory 'out' worden gemaakt. Dit kan door middel van het commando 'make setup' uit te voeren. Vervolgens worden doormiddel van het commando 'make run' beide programma's uitgevoerd. De input die aan de programma's meegegeven wordt staat in de file 'input.txt' in de directory 'input'. De output die het programma geeft wordt weggeschreven naar 'worst-fit.txt' of 'first-fit.txt' in de directory out. Om de output snel te verwijderen kan het commando 'make cleanout' worden uitgevoerd. De uitvoer bestanden worden dan verwijderd. Om alle gecompileerd en gelinkt files te verwijderen kan het commando 'make clean' gebruikt worden. Om zowel de outputfiles als de gecompileerde en gelinkte files te verwijderen kan het commando 'make cleanall' gebruikt worden.
 
-	\section{Het programma}\label{sec:programma}
-		\subsection{Blok administratie}
-		In het programma wordt gebruik gemaakt van een administratie die vooraan het geheugenblok geplaatst is. Dit administratieblok bestaat uit vier delen:
-		\begin{itemize}
-			\item De lengte van het geheugenblok
-			\item De index van het administratieblok van het vorige geheugenblok
-			\item De index van het administratieblok van het volgende geheugenblok
-			\item De status van het geheugenblok, is deze vrij of bezet.
-		\end{itemize}
-		Al deze delen worden in het geheugen gerepresenteerd als 16 bit shorts. het totale administratieblok is dus 64 bits.
-		Het programma is zelf in staat om te ontdekken op wat voor machine het draait.
-		Als het programma op een 32 bits machine draait zal het programma mem-access-32.c gebruiken.
-		Hierin wordt het administratieblok als twee 32 bits longs gerepresenteerd.
-		Als het programma op een 64 bits machine gedraaid wordt zal het automatisch mem-access-64.c gebruiken.
-		Dit zorgt er voor dat het gehele administratieblok in een 64 bits long geplaatst word.
+
+	\section{Het programma}\label{sec:programma}	
+		\subsection{Blok administratie}\label{sec:programmablok}
+			In het programma wordt gebruik gemaakt van een administratie die vooraan het geheugenblok geplaatst is. Dit administratieblok bestaat uit vier delen:
+			\begin{itemize}
+				\item De lengte van het geheugenblok
+				\item De index van het administratieblok van het vorige geheugenblok
+				\item De index van het administratieblok van het volgende geheugenblok
+				\item De status van het geheugenblok, is deze vrij of bezet.
+			\end{itemize}
+			Al deze delen worden in het geheugen gerepresenteerd als 16 bit shorts. het totale administratieblok is dus 64 bits.
+			Het programma is zelf in staat om te ontdekken op wat voor machine het draait.
+			Als het programma op een 32 bits machine draait zal het programma mem-access-32.c gebruiken.
+			Hierin wordt het administratieblok als twee 32 bits longs gerepresenteerd.
+			Als het programma op een 64 bits machine gedraaid wordt zal het automatisch mem-access-64.c gebruiken.
+			Dit zorgt er voor dat het gehele administratieblok in een 64 bits long geplaatst word.
 		
+		\subsection{Globale administratie}\label{sec:programmaglobaal}
+			Het programma moet ook kunnen bijhouden hoeveel geheugen het heeft toegewezen en hoeveel loze ruimte er gebruikt is.
+			Hiervoor gebruikt het programma de eerste twee longs. De allereerste long bevat het aantal toegewezen woorden.
+			De tweede long bevat het aantal loze woorden, dit is het aantal woorden dat gebruikt wordt voor de administartie van de blokken.
+			De eerste twee longs zelf worden niet als loze woorden gerekend.
+			Er is expliciet gekozen om deze twee administratie items niet samen te voegen tot een long aangezien dit de toegang tot deze administratie veel lastiger maakt.
+			Aangezien de eerste twee longs altijd gebruikt worden kunnen deze nooit in een blok voorkomen.
+			Het eerste vrij blok dat de gehele ruimte omvat is dus de lengte van het geheugen min 2 min de blok administratie lengte.
+		
+		\subsection{Blok functies}\label{sec:programmafunc}
+			Voor het gemak zijn de functies die blokken wijzigen gescheiden van het programma zelf. Er zijn 3 functies die gebruikt worden door beide programma's.
+			De eerste functie is new\_block, deze functie maakt een nieuw blok aan met aangegeven lengte. De tweede functie is de split\_block functie, deze functie
+			probeert geheugen toe te wijzen door een gegeven blok op te delen in twee nieuwe blokken. Het eerste blok zal dan de hoeveelheid gevraagd geheugen bevatten
+			en het tweede blok bevat de overgebleven vrije ruimte. Als er geen ruimte meer overblijft voor een tweede blok zal simpelweg het gehele blok toegewezen worden.
+			De laatste functie is free\_block, deze functie zal een blok op een gegeven index vrij geven.
+			Als er omringende blokken ook vrij zijn zal het blok samengevoegd worden met die blokken tot een groot nieuw vrij blok.
+			
+		\subsection{Het first-fit programma}\label{sec:programmaff}
+			Het first fit programma is zo gemaakt dat het bij een aanvraag van een stuk geheugen over de blokken zal gaan lopen.
+			Het programma begint bij het blok op index 2, aangezien 0 en 1 gebruikt worden voor globale administratie.
+			Als het blok op index 2 niet vrij is of niet groot genoeg zal het blok kijken naar het blok op de index gegeven bij de volgende index in
+			de administratie van het blok op index 2. Dit gaat zo door tot een geschikt blok gevonden is.
+			Hierna zal het programma als het blok precies groot genoeg is het blok toewijzen.
+			Als het blok groter is dan de aanvraag wordt de split\_block functie gebruikt.
+			Als er geen geschikt blok gevonden is zal de aanvraag geweigerd worden.
+			
+		\subsection{Het worst-fit programma}\label{sec:programmawf}
+			Het worst fit programma komt in grote delen overeen met het first fit programma.
+			Het verschil is dat het programma alle blokken af loopt en het grootste vrije gat zoekt.
+			Als het programma een blok tegen komt dat precies groot genoeg is stopt hij de zoektocht en wijst het toe.
+			Anders zal het grootst gevonden blok gesplit worden met de split\_block functie.
+			Als er geen geschikt blok is gevonden zal de aanvraag geweigerd worden.
 	\section{Resultaten}\label{sec:resultaten}
 
 
