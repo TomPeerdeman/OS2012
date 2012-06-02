@@ -1,17 +1,49 @@
 #ifndef MEM_FUNC_H
 #define MEM_FUNC_H
 
-/* Zet de gebruikte architectuur. (ARCH_0, ARCH_32, ARCH_64)*/
-#define ARCH_64
-
 /* Lengte van een administratie blok. Aantal longs voorafgaande de eigenlijke
  * data. */
-#ifdef ARCH_32
-#define ADMIN_SIZE 2
+
+/* Amd 64 bit */
+#ifdef __x86_64__
+#define ADMIN_SIZE 1
 #endif
 
-#ifdef ARCH_64
+#ifndef ADMIN_SIZE
+#ifdef _M_X64
 #define ADMIN_SIZE 1
+#endif
+#endif
+
+/* Amd x86 bit */
+#ifndef ADMIN_SIZE
+#ifdef _M_X86
+#define ADMIN_SIZE 2
+#endif
+#endif
+
+/* Intel x86 */
+#ifndef ADMIN_SIZE
+#ifdef __i386__
+#define ADMIN_SIZE 2
+#endif
+#endif
+
+#ifndef ADMIN_SIZE
+#ifdef _X86_
+#define ADMIN_SIZE 2
+#endif
+#endif
+
+/* Intel itanium 64 bit */
+#ifndef ADMIN_SIZE
+#ifdef __ia64__
+#define ADMIN_SIZE 1
+#endif
+#endif
+
+#ifndef ADMIN_SIZE
+#define ADMIN_SIZE 2
 #endif
 
 void new_block(long index, long length, long prev, long next);

@@ -1,6 +1,8 @@
 #include "mem_alloc.h"
 #include "mem-func.h"
 
+#include <stdio.h>
+
 void mem_init(long memory[MEM_SIZE]){
 	mem = memory;
 	
@@ -11,6 +13,8 @@ void mem_init(long memory[MEM_SIZE]){
 	
 	/* Eerste vrije blok. */
 	new_block(2, (MEM_SIZE - ADMIN_SIZE - 2), 0, 0);
+	
+	printf("ARCH: %d\n", ADMIN_SIZE);
 }
 
 long  mem_get(long request){

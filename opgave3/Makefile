@@ -7,17 +7,17 @@ INCL2=worst-fit.o mem-func.o
 
 SEED=10
 
-MEM_ARCH=-64
-
 #Compiler
 CC=gcc
 CFLAGS=-Wall -ansi -O2 -Wextra -Werror
 
-#Andere vereiste bestanden die niet gecompileerd kunnen worden
-#O_FILES=input/mem_test2-32.o
-O_FILES=input/mem_test2-64.o
+#Zoek de systeem architectuur op
+ARCH := $(shell getconf LONG_BIT)
 
-O_MEM=mem-access$(MEM_ARCH).o
+#Andere vereiste bestanden die niet gecompileerd kunnen worden
+O_FILES=input/mem_test2-$(ARCH).o
+
+O_MEM=mem-access-$(ARCH).o
 
 all: $(PROG) $(PROG2)
 
