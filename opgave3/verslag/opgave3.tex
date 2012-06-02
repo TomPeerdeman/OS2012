@@ -39,6 +39,19 @@
 	\newpage
 
 	\section{Inleiding}\label{sec:inleiding}
+	Geheugenbeheer en de allocatie van geheugen is erg belangrijk binnen een computer. Het moet op een functionele manier gebeuren en het geheugen moet optimaal benut worden. Geheugen-allocatie kan op vele verschillende manieren worden afgehandeld. Specifiek wordt er gekeken naar de wost-fit methode en de first-fit methode.
+	\newpage
+
+
+	\section{First-fit}\label{sec:first-fit}
+	\subsection{Inleiding first-fit}\label{sec:inleidingff}
+	De allocatie van geheugen bij first-fit, werkt zoals de naam al doet denken. De eerst mogelijke plaatst waar het stuk geheugen gealloceerd zou kunnen worden wordt ook gealloceerd. De allocatie is over het algemeen erg snel en hierdoor is first-fit een goed werkend geheugenbeheer algoritme.
+
+
+	\section{Worst-fit}\label{sec:worst-fit}
+	\subsection{Inleiding worst-fit}\label{sec:inleidingwf}
+	De allocatie van geheugen bij worst-fit zoekt het grootste vrije blok geheugen op. Als dit blok is gevonden wordt daar het geheugen gealloceerd. Dit algoritme is bedacht om wat grotere stukken geheugen vrij te laten bij het alloceren. Als een stuk vrij geheugen groot is, dan is er een grotere kans dat het nog gebruikt kan gaan worden. Hele kleine stukken geheugen kunnen namelijk over het algemeen niet worden toegewezen. Het worst-fit algoritme werkt iets langzamer omdat het moet bijhouden hoe groot ieder vrij stuk is en moet bepalen waar het grootste vrije stuk zich bevind.
+
 
 	\section{Makefile / setup}\label{sec:makefile}
 	De makefile maakt twee programma's: worst-fit en first-fit. Om de programma's te maken dient het commando 'make' uitgevoerd te worden. De programma's worden dan gecompileerd. Voor gebruiksgemak is het commando 'make run' toegevoegd. Als dit commando wordt gegeven worden beide programma's direct uitgevoerd. De input die aan de programma's meegegeven wordt staat in de file 'input.txt' in de directory 'input'. De output die het programma geeft wordt weggeschreven naar 'worst-fit.txt' of 'firsti-fit.txt' in de directory out. Om de output snel te verwijderen kan het commando 'make cleanout' worden uitgevoerd. De uitvoer bestanden worden dan verwijderd. Om alle gecompileerd en gelinkt files te verwijderen kan het commando 'make clean' gebruikt worden. Om zowel de outputfiles als de gecompileerde en gelinkte files te verwijderen kan het commando 'make cleanall' gebruikt worden.
